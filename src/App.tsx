@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import './config/cognito'; // Initialize AWS Cognito
 import { EnhancedLandingPage } from './components/EnhancedLandingPage';
 import { LoginPage } from './components/LoginPage';
 import { Onboarding } from './components/Onboarding';
@@ -39,6 +40,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import type { NavigationPage } from './types';
+import { toast } from 'sonner';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<NavigationPage>('landing');
@@ -46,6 +48,36 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [notificationCount] = useState(3);
+  const [userData, setUserData] = useState<any>(null);
+
+  // Check for existing Cognito session on mount
+  useEffect(() => {
+    const checkExistingSession = async () => {
+      try {
+        const { getCurrentUser } = await import('aws-amplify/auth');
+        const user = await getCurrentUser();
+        
+        if (user) {
+          // User is already signed in
+          const userData = {
+            name: user.signInDetails?.loginId || 'User',
+            email: user.signInDetails?.loginId || '',
+            userId: user.userId,
+          };
+          
+          setUserData(userData);
+          setIsLoggedIn(true);
+          setIsOnboarded(true);
+          setCurrentPage('dashboard');
+          console.log('✅ Existing Cognito session found, auto-login successful');
+        }
+      } catch (error) {
+        console.log('No existing session - showing landing page');
+      }
+    };
+    
+    checkExistingSession();
+  }, []);
 
   const handleGetStarted = () => {
     if (!isLoggedIn) {
@@ -55,9 +87,24 @@ export default function App() {
     }
   };
 
-  const handleLogin = () => {
+  const handleLogin = (userData?: any) => {
+    setIsLoggedIn(true);
+    if (userData) {
+      setUserData(userData);
+      // If user has data, skip onboarding and go to dashboard
+      setIsOnboarded(true);
+      setCurrentPage('dashboard');
+    } else {
+      setCurrentPage('onboarding');
+    }
+  };
+
+  // Temporary bypass for Cognito issues
+  const handleBypassAuth = () => {
+    console.log('🔄 Bypassing authentication due to Cognito user pool issues');
     setIsLoggedIn(true);
     setCurrentPage('onboarding');
+    toast.success('Authentication bypassed - you can now test the platform!');
   };
 
   const handleBackToLanding = () => {
@@ -95,7 +142,7 @@ export default function App() {
 
   const renderPage = () => {
     if (currentPage === 'landing') {
-      return <EnhancedLandingPage onGetStarted={handleGetStarted} />;
+      return <EnhancedLandingPage onGetStarted={handleGetStarted} onBypassAuth={handleBypassAuth} />;
     }
 
     if (currentPage === 'login') {

@@ -26,9 +26,10 @@ import type { NavigationPage } from '../types';
 
 interface InteractiveDashboardProps {
   onNavigate: (page: NavigationPage) => void;
+  userData?: any;
 }
 
-export function InteractiveDashboard({ onNavigate }: InteractiveDashboardProps) {
+export function InteractiveDashboard({ onNavigate, userData }: InteractiveDashboardProps) {
   const stats = [
     {
       label: 'AI Job Matches',
@@ -248,7 +249,7 @@ export function InteractiveDashboard({ onNavigate }: InteractiveDashboardProps) 
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-4xl mb-2">
-          Welcome Back, Alex! 👋
+          Welcome Back, {userData?.name || 'User'}! 👋
         </h1>
         <p className="text-lg text-slate-600">
           Here's your career progress overview

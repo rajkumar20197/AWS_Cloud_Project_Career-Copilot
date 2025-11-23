@@ -7,6 +7,7 @@ import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Separator } from './ui/separator';
+import { AvatarUpload } from './AvatarUpload';
 import {
   User,
   Bell,
@@ -19,6 +20,7 @@ import {
 } from 'lucide-react';
 import { mockUser } from '../services/mockData';
 import type { User as UserType } from '../types';
+import { toast } from 'sonner';
 
 export function SettingsPage() {
   const [user, setUser] = useState<UserType>(mockUser);
@@ -47,6 +49,18 @@ export function SettingsPage() {
 
         {/* Profile Tab */}
         <TabsContent value="profile" className="space-y-4">
+          {/* Avatar Upload */}
+          <AvatarUpload
+            currentAvatar={user.avatar}
+            userName={user.name}
+            onUpload={async (file) => {
+              // Simulate upload
+              await new Promise(resolve => setTimeout(resolve, 1500));
+              toast.success('Profile picture updated!');
+              // In production: upload to S3 and update user profile
+            }}
+          />
+          
           <Card className="p-6">
             <div className="flex items-center gap-3 mb-6">
               <User className="w-5 h-5 text-blue-600" />

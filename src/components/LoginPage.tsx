@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Logo } from './Logo';
+import { AuthService } from '../services/authService';
+import { toast } from 'sonner';
 import {
   Sparkles,
   Mail,
@@ -17,10 +19,12 @@ import {
   CheckCircle2,
   Rocket,
   Target,
+  User,
+  AlertCircle,
 } from 'lucide-react';
 
 interface LoginPageProps {
-  onLogin: () => void;
+  onLogin: (userData?: any) => void;
   onBackToLanding?: () => void;
 }
 
@@ -28,17 +32,86 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
+  const [confirmationCode, setConfirmationCode] = useState('');
+  const [error, setError] = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      if (isLogin) {
+        // Sign in
+        const result = await AuthService.signIn({ email, password });
+        if (result.isSignedIn) {
+          // Get user attributes after successful login
+          try {
+            const { getCurrentUser } = await import('aws-amplify/auth');
+            const user = await getCurrentUser();
+            const userData = {
+              name: user.signInDetails?.loginId || name || 'User',
+              email: email,
+              userId: user.userId,
+            };
+            toast.success(`Welcome back, ${userData.name}!`);
+            onLogin(userData);
+          } catch (error) {
+            console.log('Could not get user details, proceeding with basic info');
+            onLogin({ name: name || 'User', email: email });
+          }
+        }
+      } else {
+        // Sign up
+        const result = await AuthService.signUp({ email, password, name });
+        if (result.nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
+          setNeedsConfirmation(true);
+          toast.success('Verification code sent to your email!');
+        } else if (result.isSignUpComplete) {
+          toast.success('Account created! Please sign in.');
+          setIsLogin(true);
+        }
+      }
+    } catch (err: any) {
+      console.error('Auth error:', err);
+      setError(err.message || 'Authentication failed');
+      toast.error(err.message || 'Authentication failed');
+    } finally {
       setIsLoading(false);
-      onLogin();
-    }, 1500);
+    }
+  };
+
+  const handleConfirmSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      await AuthService.confirmSignUp({ email, code: confirmationCode });
+      toast.success('Email verified! Please sign in.');
+      setNeedsConfirmation(false);
+      setIsLogin(true);
+      setConfirmationCode('');
+    } catch (err: any) {
+      console.error('Confirmation error:', err);
+      setError(err.message || 'Verification failed');
+      toast.error(err.message || 'Verification failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    try {
+      await AuthService.resendConfirmationCode(email);
+      toast.success('Verification code resent!');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to resend code');
+    }
   };
 
   const features = [
@@ -248,49 +321,204 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
                 </button>
               </div>
 
-              <AnimatePresence mode="wait">
-                <motion.form
-                  key={isLogin ? 'login' : 'signup'}
-                  initial={{ opacity: 0, x: isLogin ? -20 : 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: isLogin ? 20 : -20 }}
-                  transition={{ duration: 0.3 }}
-                  onSubmit={handleSubmit}
-                  className="space-y-6"
-                >
-                  <div>
-                    <label className="text-sm text-slate-300 mb-2 block">
-                      Email Address
-                    </label>
-                    <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                      <Input
-                        type="email"
-                        placeholder="you@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="pl-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-blue-500 focus:bg-white/10 h-12 rounded-xl"
-                      />
-                    </div>
-                  </div>
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-300">{error}</p>
+                </div>
+              )}
 
-                  <div>
-                    <label className="text-sm text-slate-300 mb-2 block">
-                      Password
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <AnimatePresence mode="wait">
+                {needsConfirmation ? (
+                  <motion.form
+                    key="confirmation"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    onSubmit={handleConfirmSignUp}
+                    className="space-y-6"
+                  >
+                    <div className="text-center space-y-2">
+                      <h3 className="text-xl text-white font-semibold">Verify Your Email</h3>
+                      <p className="text-sm text-slate-400">
+                        We sent a verification code to <span className="text-blue-400">{email}</span>
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="text-sm text-slate-300 mb-2 block">
+                        Verification Code
+                      </label>
                       <Input
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        type="text"
+                        placeholder="Enter 6-digit code"
+                        value={confirmationCode}
+                        onChange={(e) => setConfirmationCode(e.target.value)}
                         required
-                        className="pl-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-blue-500 focus:bg-white/10 h-12 rounded-xl"
+                        maxLength={6}
+                        className="bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-blue-500 focus:bg-white/10 h-12 rounded-xl text-center text-2xl tracking-widest"
                       />
                     </div>
-                  </div>
+
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl"
+                    >
+                      {isLoading ? 'Verifying...' : 'Verify Email'}
+                    </Button>
+
+                    <button
+                      type="button"
+                      onClick={handleResendCode}
+                      className="w-full text-sm text-blue-400 hover:text-blue-300"
+                    >
+                      Didn't receive code? Resend
+                    </button>
+                  </motion.form>
+                ) : (
+                  <motion.form
+                    key={isLogin ? 'login' : 'signup'}
+                    initial={{ opacity: 0, x: isLogin ? -20 : 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: isLogin ? 20 : -20 }}
+                    transition={{ duration: 0.3 }}
+                    onSubmit={handleSubmit}
+                    className="space-y-6"
+                  >
+                    {!isLogin && (
+                      <div>
+                        <label className="text-sm text-slate-300 mb-2 block">
+                          Full Name
+                        </label>
+                        <div className="relative">
+                          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                          <Input
+                            type="text"
+                            placeholder="John Doe"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            className="pl-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-blue-500 focus:bg-white/10 h-12 rounded-xl"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="text-sm text-slate-300 mb-2 block">
+                        Email Address
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <Input
+                          type="email"
+                          placeholder="you@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          className="pl-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-blue-500 focus:bg-white/10 h-12 rounded-xl"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-sm text-slate-300 mb-2 block">
+                        Password
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <Input
+                          type="password"
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          minLength={8}
+                          className="pl-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-blue-500 focus:bg-white/10 h-12 rounded-xl"
+                        />
+                      </div>
+                      {!isLogin && (
+                        <div className="mt-3 space-y-2 bg-white/5 rounded-lg p-3 border border-white/10">
+                          <p className="text-xs font-medium text-slate-300 mb-2">Password must include:</p>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center gap-2 text-xs">
+                              <CheckCircle2 className={`w-3.5 h-3.5 ${password.length >= 8 ? 'text-green-400' : 'text-slate-500'}`} />
+                              <span className={password.length >= 8 ? 'text-green-400' : 'text-slate-400'}>
+                                At least 8 characters
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs">
+                              <CheckCircle2 className={`w-3.5 h-3.5 ${/[A-Z]/.test(password) ? 'text-green-400' : 'text-slate-500'}`} />
+                              <span className={/[A-Z]/.test(password) ? 'text-green-400' : 'text-slate-400'}>
+                                One uppercase letter (A-Z)
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs">
+                              <CheckCircle2 className={`w-3.5 h-3.5 ${/[a-z]/.test(password) ? 'text-green-400' : 'text-slate-500'}`} />
+                              <span className={/[a-z]/.test(password) ? 'text-green-400' : 'text-slate-400'}>
+                                One lowercase letter (a-z)
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs">
+                              <CheckCircle2 className={`w-3.5 h-3.5 ${/[0-9]/.test(password) ? 'text-green-400' : 'text-slate-500'}`} />
+                              <span className={/[0-9]/.test(password) ? 'text-green-400' : 'text-slate-400'}>
+                                One number (0-9)
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs">
+                              <CheckCircle2 className={`w-3.5 h-3.5 ${/[^A-Za-z0-9]/.test(password) ? 'text-green-400' : 'text-slate-500'}`} />
+                              <span className={/[^A-Za-z0-9]/.test(password) ? 'text-green-400' : 'text-slate-400'}>
+                                One special character (!@#$%^&*)
+                              </span>
+                            </div>
+                          </div>
+                          <div className="mt-3 pt-3 border-t border-white/10">
+                            <p className="text-xs text-blue-400">
+                              Example: MyPass123!
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                  {!isLogin && (
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                      <label className="flex items-start gap-3 text-sm text-slate-300 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={acceptedTerms}
+                          onChange={(e) => setAcceptedTerms(e.target.checked)}
+                          required
+                          className="mt-0.5 rounded border-white/20 bg-white/5 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
+                        />
+                        <span className="group-hover:text-white transition-colors">
+                          I agree to the{' '}
+                          <a
+                            href="/terms"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:text-blue-300 underline"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Terms and Conditions
+                          </a>
+                          {' '}and{' '}
+                          <a
+                            href="/privacy"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:text-blue-300 underline"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Privacy Policy
+                          </a>
+                        </span>
+                      </label>
+                    </div>
+                  )}
 
                   {isLogin && (
                     <div className="flex items-center justify-between text-sm">
@@ -306,8 +534,8 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
 
                   <Button
                     type="submit"
-                    disabled={isLoading}
-                    className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl group relative overflow-hidden"
+                    disabled={isLoading || (!isLogin && !acceptedTerms)}
+                    className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       {isLoading ? (
@@ -336,25 +564,51 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="h-12 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 rounded-xl"
-                    >
-                      <Github className="w-5 h-5 mr-2" />
-                      GitHub
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="h-12 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 rounded-xl"
-                    >
-                      <Chrome className="w-5 h-5 mr-2" />
-                      Google
-                    </Button>
-                  </div>
-                </motion.form>
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-white/10" />
+                      </div>
+                      <div className="relative flex justify-center text-sm">
+                        <span className="px-4 bg-transparent text-slate-400">
+                          Or continue with
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={async () => {
+                          try {
+                            await AuthService.signInWithGitHub();
+                          } catch (err: any) {
+                            toast.error(err.message || 'GitHub login failed');
+                          }
+                        }}
+                        className="h-12 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 rounded-xl transition-all hover:scale-105"
+                      >
+                        <Github className="w-5 h-5 mr-2" />
+                        GitHub
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={async () => {
+                          try {
+                            await AuthService.signInWithGoogle();
+                          } catch (err: any) {
+                            toast.error(err.message || 'Google login failed');
+                          }
+                        }}
+                        className="h-12 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 rounded-xl transition-all hover:scale-105"
+                      >
+                        <Chrome className="w-5 h-5 mr-2" />
+                        Google
+                      </Button>
+                    </div>
+                  </motion.form>
+                )}
               </AnimatePresence>
 
               {/* Features Preview */}
@@ -399,10 +653,11 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
                   <CheckCircle2 className="w-4 h-4 text-green-400" />
                   <span>AWS Protected</span>
                 </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-green-400" />
+                  <span>GDPR Compliant</span>
+                </div>
               </div>
-              <p className="text-xs text-slate-500">
-                By continuing, you agree to our Terms & Privacy Policy
-              </p>
             </motion.div>
           </motion.div>
         </div>

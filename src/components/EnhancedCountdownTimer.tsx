@@ -6,9 +6,10 @@ import { Sparkles, Calendar, Rocket, ArrowRight } from 'lucide-react';
 interface EnhancedCountdownTimerProps {
   graduationDate: string;
   onContinue: () => void;
+  onAddToCalendar?: () => void;
 }
 
-export function EnhancedCountdownTimer({ graduationDate, onContinue }: EnhancedCountdownTimerProps) {
+export function EnhancedCountdownTimer({ graduationDate, onContinue, onAddToCalendar }: EnhancedCountdownTimerProps) {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -236,6 +237,7 @@ export function EnhancedCountdownTimer({ graduationDate, onContinue }: EnhancedC
             <Button
               variant="outline"
               size="lg"
+              onClick={onAddToCalendar}
               className="bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 px-8 py-6 text-lg rounded-xl"
             >
               <Calendar className="mr-2 w-5 h-5" />

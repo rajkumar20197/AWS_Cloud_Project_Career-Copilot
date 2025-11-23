@@ -37,6 +37,8 @@ export function Onboarding({ onComplete }: OnboardingProps) {
     email: '',
     careerStage: '',
     graduationDate: '',
+    major: '',
+    currentSemester: 1,
     currentRole: '',
     targetRole: '',
     skills: [] as string[],
@@ -64,6 +66,28 @@ export function Onboarding({ onComplete }: OnboardingProps) {
     'Technology', 'Finance', 'Healthcare', 'E-commerce',
     'Consulting', 'Education', 'Media', 'Manufacturing'
   ];
+
+  // Validation for each step
+  const isStepValid = () => {
+    switch (step) {
+      case 1:
+        return formData.name.trim() !== '' && 
+               formData.email.trim() !== '' && 
+               formData.careerStage !== '' &&
+               (formData.careerStage !== 'student' || (formData.graduationDate !== '' && formData.major.trim() !== ''));
+      case 2:
+        return formData.targetRole.trim() !== '' && 
+               formData.skills.length >= 3;
+      case 3:
+        return formData.locations.length > 0 && 
+               formData.industries.length > 0;
+      case 4:
+        return formData.salaryMin > 0 && 
+               formData.salaryMax > formData.salaryMin;
+      default:
+        return true;
+    }
+  };
 
   const handleNext = () => {
     // Special handling for students entering graduation date
@@ -177,15 +201,42 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               </div>
 
               {formData.careerStage === 'student' && (
-                <div>
-                  <Label htmlFor="graduationDate">Expected Graduation Date</Label>
-                  <Input
-                    id="graduationDate"
-                    type="date"
-                    value={formData.graduationDate}
-                    onChange={e => setFormData({ ...formData, graduationDate: e.target.value })}
-                  />
-                </div>
+                <>
+                  <div>
+                    <Label htmlFor="major">Major / Field of Study</Label>
+                    <Input
+                      id="major"
+                      value={formData.major}
+                      onChange={e => setFormData({ ...formData, major: e.target.value })}
+                      placeholder="e.g., Computer Science"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="semester">Current Semester</Label>
+                    <select
+                      id="semester"
+                      value={formData.currentSemester}
+                      onChange={e => setFormData({ ...formData, currentSemester: Number(e.target.value) })}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
+                        <option key={sem} value={sem}>Semester {sem}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="graduationDate">Expected Graduation Date</Label>
+                    <Input
+                      id="graduationDate"
+                      type="date"
+                      value={formData.graduationDate}
+                      onChange={e => setFormData({ ...formData, graduationDate: e.target.value })}
+                      min={new Date().toISOString().split('T')[0]}
+                    />
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -199,6 +250,22 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               onContinue={() => {
                 setShowCountdown(false);
                 handleNext();
+              }}
+              onAddToCalendar={() => {
+                // Create calendar event for graduation
+                const graduationEvent = {
+                  title: 'Graduation Day 🎓',
+                  date: formData.graduationDate,
+                  description: 'My graduation day - Career Copilot journey begins!',
+                  location: formData.university || 'University'
+                };
+                
+                // Create Google Calendar URL
+                const startDate = new Date(formData.graduationDate || '').toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(graduationEvent.title)}&dates=${startDate}/${startDate}&details=${encodeURIComponent(graduationEvent.description)}&location=${encodeURIComponent(graduationEvent.location)}`;
+                
+                // Open in new tab
+                window.open(calendarUrl, '_blank');
               }}
             />
           )}
@@ -386,6 +453,18 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           </div>
         )}
 
+        {/* Validation Message */}
+        {!isStepValid() && !showCountdown && (
+          <div className="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+            <p className="text-sm text-orange-800">
+              {step === 1 && '⚠️ Please fill in all required fields (name, email, career stage)'}
+              {step === 2 && '⚠️ Please enter your target role and select at least 3 skills'}
+              {step === 3 && '⚠️ Please select at least one location and one industry'}
+              {step === 4 && '⚠️ Please set a valid salary range'}
+            </p>
+          </div>
+        )}
+
         {/* Navigation */}
         <div className="flex justify-between mt-8 pt-6 border-t">
           <Button
@@ -395,7 +474,11 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           >
             Back
           </Button>
-          <Button onClick={handleNext}>
+          <Button 
+            onClick={handleNext}
+            disabled={!isStepValid() && !showCountdown}
+            className={!isStepValid() && !showCountdown ? 'opacity-50 cursor-not-allowed' : ''}
+          >
             {step === totalSteps ? 'Complete Setup' : showCountdown ? 'Continue to Career Goals' : 'Next'}
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>

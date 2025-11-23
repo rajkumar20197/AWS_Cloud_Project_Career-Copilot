@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -18,9 +18,11 @@ import {
   Mail,
   Clock,
   TrendingUp,
-  Trash2
+  Trash2,
+  Loader2
 } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
+import { ProfileService } from '../services/profileService';
 
 interface Application {
   id: string;
@@ -45,41 +47,51 @@ const statusConfig = {
 };
 
 export function ApplicationTracker() {
-  const [applications, setApplications] = useState<Application[]>([
-    {
-      id: '1',
-      company: 'Amazon',
-      position: 'Software Development Engineer',
-      location: 'Seattle, WA',
-      salary: '$120k - $160k',
-      appliedDate: '2025-10-15',
-      status: 'interview',
-      notes: 'Technical interview scheduled for next week',
-      nextAction: 'System design interview',
-      nextActionDate: '2025-10-25'
-    },
-    {
-      id: '2',
-      company: 'Google',
-      position: 'Frontend Engineer',
-      location: 'Mountain View, CA',
-      salary: '$140k - $180k',
-      appliedDate: '2025-10-18',
-      status: 'screening',
-      notes: 'Waiting for recruiter call',
-      nextAction: 'Phone screening'
-    },
-    {
-      id: '3',
-      company: 'Microsoft',
-      position: 'Cloud Solutions Architect',
-      location: 'Redmond, WA',
-      salary: '$130k - $170k',
-      appliedDate: '2025-10-12',
-      status: 'applied',
-      notes: 'Applied through employee referral'
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadAIApplications();
+  }, []);
+
+  const loadAIApplications = async () => {
+    try {
+      setLoading(true);
+      const userId = ProfileService.getUserId();
+      const userProfile = await ProfileService.getProfile(userId);
+      
+      if (!userProfile) {
+        toast.error('Please complete your profile first');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch('http://localhost:3001/api/ai-jobs/applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userProfile: {
+            name: userProfile.name,
+            currentRole: userProfile.profile?.currentRole,
+            targetRole: userProfile.profile?.targetRole,
+            skills: userProfile.profile?.skills,
+          },
+          count: 5,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to generate applications');
+
+      const data = await response.json();
+      setApplications(data.applications);
+      toast.success(`🤖 Generated ${data.applications.length} AI applications!`);
+    } catch (error: any) {
+      console.error('Error loading AI applications:', error);
+      toast.error('Failed to load applications');
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
   const [newApplication, setNewApplication] = useState<Partial<Application>>({
     status: 'applied'

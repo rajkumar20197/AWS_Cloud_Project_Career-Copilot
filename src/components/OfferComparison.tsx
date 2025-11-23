@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -21,9 +21,11 @@ import {
   Users,
   Trash2,
   Crown,
-  CheckCircle
+  CheckCircle,
+  Loader2
 } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
+import { ProfileService } from '../services/profileService';
 
 interface Offer {
   id: string;
@@ -41,36 +43,50 @@ interface Offer {
 }
 
 export function OfferComparison() {
-  const [offers, setOffers] = useState<Offer[]>([
-    {
-      id: '1',
-      company: 'Amazon',
-      position: 'Senior SDE',
-      baseSalary: 150000,
-      bonus: 30000,
-      equity: 120000,
-      location: 'Seattle, WA',
-      benefits: ['Health', 'Dental', 'Vision', '401k Match', 'RSU'],
-      workLifeBalance: 6,
-      careerGrowth: 9,
-      companyRating: 8,
-      remoteFlexibility: 4
-    },
-    {
-      id: '2',
-      company: 'Google',
-      position: 'Software Engineer III',
-      baseSalary: 165000,
-      bonus: 35000,
-      equity: 150000,
-      location: 'Mountain View, CA',
-      benefits: ['Health', 'Dental', 'Vision', '401k Match', 'Free Food', 'Gym'],
-      workLifeBalance: 7,
-      careerGrowth: 8,
-      companyRating: 9,
-      remoteFlexibility: 6
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadAIOffers();
+  }, []);
+
+  const loadAIOffers = async () => {
+    try {
+      setLoading(true);
+      const userId = ProfileService.getUserId();
+      const userProfile = await ProfileService.getProfile(userId);
+      
+      if (!userProfile) {
+        toast.error('Please complete your profile first');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch('http://localhost:3001/api/ai-jobs/offers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userProfile: {
+            targetRole: userProfile.profile?.targetRole,
+            experience: userProfile.profile?.experience,
+            location: userProfile.profile?.location,
+          },
+          count: 3,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to generate offers');
+
+      const data = await response.json();
+      setOffers(data.offers);
+      toast.success(`🤖 Generated ${data.offers.length} AI offers!`);
+    } catch (error: any) {
+      console.error('Error loading AI offers:', error);
+      toast.error('Failed to load offers');
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
   const [newOffer, setNewOffer] = useState<Partial<Offer>>({
     workLifeBalance: 5,

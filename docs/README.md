@@ -127,9 +127,55 @@ src/
 ├── services/           # AWS Bedrock integration
 ├── types/              # TypeScript definitions
 ├── config/             # AWS configuration
-├── backend/            # Lambda functions
-└── infrastructure/     # CloudFormation templates
+server/
+├── routes/             # API endpoints
+├── services/           # Backend services
+└── config/             # Server configuration
+docs/
+├── COURSE_MATERIALS_GUIDE.md    # 🎓 Complete course guide for students
+├── AWS_SERVICES.md              # AWS services documentation
+├── DATABASE_SETUP_COMPLETE.md   # Database setup guide
+├── TESTING_GUIDE.md             # Testing instructions
+├── PRODUCTION_DEPLOYMENT_GUIDE.md # Deployment guide
+└── [38+ more documentation files]
+infrastructure/
+└── *.yaml              # CloudFormation templates
 ```
+
+## 📚 Documentation
+
+All documentation has been organized in the `/docs` folder:
+
+### 🎓 For Students & Learning
+
+- **[COURSE_MATERIALS_GUIDE.md](docs/COURSE_MATERIALS_GUIDE.md)** - Complete course guide mapping to cloud computing modules
+- **[AWS_SERVICES.md](docs/AWS_SERVICES.md)** - Comprehensive AWS services documentation
+- **[TERRAFORM_VS_CLOUDFORMATION.md](docs/TERRAFORM_VS_CLOUDFORMATION.md)** - IaC comparison guide
+
+### 🚀 Setup & Configuration
+
+- **[SETUP_GUIDE.md](docs/SETUP_GUIDE.md)** - Initial setup instructions
+- **[AWS_SETUP_GUIDE.md](docs/AWS_SETUP_GUIDE.md)** - AWS configuration
+- **[DATABASE_SETUP_COMPLETE.md](docs/DATABASE_SETUP_COMPLETE.md)** - Database setup
+- **[SOCIAL_LOGIN_SETUP.md](docs/SOCIAL_LOGIN_SETUP.md)** - OAuth integration
+- **[GMAIL_CALENDAR_SETUP.md](docs/GMAIL_CALENDAR_SETUP.md)** - Gmail/Calendar integration
+
+### 🧪 Testing & Debugging
+
+- **[TESTING_GUIDE.md](docs/TESTING_GUIDE.md)** - Complete testing guide
+- **[DEBUGGING_GUIDE.md](docs/DEBUGGING_GUIDE.md)** - Troubleshooting help
+
+### 🏗️ Architecture & Infrastructure
+
+- **[PRESENTATION_SLIDES.md](docs/PRESENTATION_SLIDES.md)** - Project presentation
+- **[PRODUCTION_DEPLOYMENT_GUIDE.md](docs/PRODUCTION_DEPLOYMENT_GUIDE.md)** - Production deployment
+- **[infrastructure/](infrastructure/)** - CloudFormation templates and guides
+
+### 📊 Project Management
+
+- **[TODO.md](docs/TODO.md)** - Task tracking
+- **[PROJECT_STATUS_SUMMARY.md](docs/PROJECT_STATUS_SUMMARY.md)** - Current status
+- **[TIME_ESTIMATE.md](docs/TIME_ESTIMATE.md)** - Time planning
 
 ## 🔒 Security
 

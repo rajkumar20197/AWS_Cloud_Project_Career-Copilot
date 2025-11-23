@@ -1,0 +1,216 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "AI Career Agent - Multi-Region Load Balancing with Route 53"
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: careercopilot.com
+    Description: Your domain name
+
+  PrimaryRegion:
+    Type: String
+    Default: us-east-1
+    Description: Primary region
+
+  SecondaryRegion:
+    Type: String
+    Default: us-west-2
+    Description: Secondary region (failover)
+
+Resources:
+  # ============================================
+  # Route 53 Hosted Zone
+  # ============================================
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: !Ref DomainName
+      HostedZoneConfig:
+        Comment: !Sub "Hosted zone for ${DomainName}"
+      HostedZoneTags:
+        - Key: Name
+          Value: !Sub ${DomainName}-hosted-zone
+
+  # ============================================
+  # Health Checks
+  # ============================================
+
+  # Primary Region Health Check
+  PrimaryHealthCheck:
+    Type: AWS::Route53::HealthCheck
+    Properties:
+      HealthCheckConfig:
+        Type: HTTPS
+        ResourcePath: /health
+        FullyQualifiedDomainName: !Sub "primary-alb.${DomainName}"
+        Port: 443
+        RequestInterval: 30
+        FailureThreshold: 3
+      HealthCheckTags:
+        - Key: Name
+          Value: primary-region-health-check
+
+  # Secondary Region Health Check
+  SecondaryHealthCheck:
+    Type: AWS::Route53::HealthCheck
+    Properties:
+      HealthCheckConfig:
+        Type: HTTPS
+        ResourcePath: /health
+        FullyQualifiedDomainName: !Sub "secondary-alb.${DomainName}"
+        Port: 443
+        RequestInterval: 30
+        FailureThreshold: 3
+      HealthCheckTags:
+        - Key: Name
+          Value: secondary-region-health-check
+
+  # ============================================
+  # Route 53 Records - Failover Routing
+  # ============================================
+
+  # Primary Record (us-east-1)
+  PrimaryRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      Name: !Ref DomainName
+      Type: A
+      SetIdentifier: primary-us-east-1
+      Failover: PRIMARY
+      HealthCheckId: !Ref PrimaryHealthCheck
+      AliasTarget:
+        HostedZoneId: Z35SXDOTRQ7X7K # ALB hosted zone for us-east-1
+        DNSName: !Sub "primary-alb-${AWS::AccountId}.us-east-1.elb.amazonaws.com"
+        EvaluateTargetHealth: true
+
+  # Secondary Record (us-west-2) - Failover
+  SecondaryRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      Name: !Ref DomainName
+      Type: A
+      SetIdentifier: secondary-us-west-2
+      Failover: SECONDARY
+      HealthCheckId: !Ref SecondaryHealthCheck
+      AliasTarget:
+        HostedZoneId: Z1BKCTXD74EZPE # ALB hosted zone for us-west-2
+        DNSName: !Sub "secondary-alb-${AWS::AccountId}.us-west-2.elb.amazonaws.com"
+        EvaluateTargetHealth: true
+
+  # ============================================
+  # Latency-Based Routing (Alternative)
+  # ============================================
+
+  # US East Record (Latency-based)
+  USEastLatencyRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      Name: !Sub "app.${DomainName}"
+      Type: A
+      SetIdentifier: us-east-1-latency
+      Region: us-east-1
+      HealthCheckId: !Ref PrimaryHealthCheck
+      AliasTarget:
+        HostedZoneId: Z35SXDOTRQ7X7K
+        DNSName: !Sub "primary-alb-${AWS::AccountId}.us-east-1.elb.amazonaws.com"
+        EvaluateTargetHealth: true
+
+  # US West Record (Latency-based)
+  USWestLatencyRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      Name: !Sub "app.${DomainName}"
+      Type: A
+      SetIdentifier: us-west-2-latency
+      Region: us-west-2
+      HealthCheckId: !Ref SecondaryHealthCheck
+      AliasTarget:
+        HostedZoneId: Z1BKCTXD74EZPE
+        DNSName: !Sub "secondary-alb-${AWS::AccountId}.us-west-2.elb.amazonaws.com"
+        EvaluateTargetHealth: true
+
+  # ============================================
+  # Geolocation Routing (Alternative)
+  # ============================================
+
+  # North America Record
+  NorthAmericaRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      Name: !Sub "geo.${DomainName}"
+      Type: A
+      SetIdentifier: north-america
+      GeoLocation:
+        ContinentCode: NA
+      HealthCheckId: !Ref PrimaryHealthCheck
+      AliasTarget:
+        HostedZoneId: Z35SXDOTRQ7X7K
+        DNSName: !Sub "primary-alb-${AWS::AccountId}.us-east-1.elb.amazonaws.com"
+        EvaluateTargetHealth: true
+
+  # Europe Record
+  EuropeRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      Name: !Sub "geo.${DomainName}"
+      Type: A
+      SetIdentifier: europe
+      GeoLocation:
+        ContinentCode: EU
+      HealthCheckId: !Ref SecondaryHealthCheck
+      AliasTarget:
+        HostedZoneId: Z1BKCTXD74EZPE
+        DNSName: !Sub "secondary-alb-${AWS::AccountId}.us-west-2.elb.amazonaws.com"
+        EvaluateTargetHealth: true
+
+  # Default Record (Fallback)
+  DefaultRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      Name: !Sub "geo.${DomainName}"
+      Type: A
+      SetIdentifier: default
+      GeoLocation:
+        ContinentCode: "*"
+      AliasTarget:
+        HostedZoneId: Z35SXDOTRQ7X7K
+        DNSName: !Sub "primary-alb-${AWS::AccountId}.us-east-1.elb.amazonaws.com"
+        EvaluateTargetHealth: true
+
+Outputs:
+  HostedZoneId:
+    Description: Route 53 Hosted Zone ID
+    Value: !Ref HostedZone
+    Export:
+      Name: !Sub ${DomainName}-hosted-zone-id
+
+  NameServers:
+    Description: Name servers for domain configuration
+    Value: !Join [", ", !GetAtt HostedZone.NameServers]
+
+  PrimaryHealthCheckId:
+    Description: Primary region health check ID
+    Value: !Ref PrimaryHealthCheck
+
+  SecondaryHealthCheckId:
+    Description: Secondary region health check ID
+    Value: !Ref SecondaryHealthCheck
+
+  FailoverURL:
+    Description: Failover URL
+    Value: !Sub "https://${DomainName}"
+
+  LatencyURL:
+    Description: Latency-based URL
+    Value: !Sub "https://app.${DomainName}"
+
+  GeolocationURL:
+    Description: Geolocation-based URL
+    Value: !Sub "https://geo.${DomainName}"

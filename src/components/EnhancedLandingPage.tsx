@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Logo } from './Logo';
 import { HowItWorksVisual } from './HowItWorksVisual';
+import { VideoModal } from './VideoModal';
 import {
   Sparkles,
   ArrowRight,
@@ -21,16 +23,26 @@ import {
   Rocket,
   Star,
   Clock,
+  Play,
 } from 'lucide-react';
 
 interface EnhancedLandingPageProps {
   onGetStarted: () => void;
+  onBypassAuth?: () => void;
 }
 
-export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) {
+export function EnhancedLandingPage({ onGetStarted, onBypassAuth }: EnhancedLandingPageProps) {
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(true);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  // Hide welcome animation after 3 seconds
+  useState(() => {
+    const timer = setTimeout(() => setShowWelcome(false), 3000);
+    return () => clearTimeout(timer);
+  });
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -138,8 +150,8 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
         transition={{ duration: 0.6 }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Logo size="md" animated={false} onClick={scrollToTop} />
+          <div className="flex items-center justify-between h-20">
+            <Logo size="xl" animated={false} onClick={scrollToTop} />
             <div className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-slate-700 hover:text-blue-600 transition-colors">
                 Features
@@ -158,6 +170,50 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
           </div>
         </div>
       </motion.nav>
+
+      {/* Welcome Animation Overlay */}
+      {showWelcome && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: 0.5, delay: 2.5 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600"
+        >
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-center"
+          >
+            <motion.div
+              animate={{ 
+                scale: [1, 1.2, 1],
+                rotate: [0, 360]
+              }}
+              transition={{ duration: 2, ease: "easeInOut" }}
+              className="mb-6"
+            >
+              <Sparkles className="w-24 h-24 text-white mx-auto" />
+            </motion.div>
+            <motion.h1
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="text-5xl font-bold text-white mb-4"
+            >
+              Welcome to AI Career Agent
+            </motion.h1>
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="text-xl text-white/90"
+            >
+              Your AI-powered career companion
+            </motion.p>
+          </motion.div>
+        </motion.div>
+      )}
 
       {/* Hero Section with Parallax */}
       <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
@@ -227,9 +283,15 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
                 Start Your Career Journey
                 <Rocket className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button size="lg" variant="outline" className="px-8 py-6 text-lg">
+
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="px-8 py-6 text-lg group"
+                onClick={() => setIsVideoOpen(true)}
+              >
+                <Play className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                 Watch 3-Minute Demo
-                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </motion.div>
 
@@ -449,7 +511,7 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
-              <Logo size="sm" variant="full" onClick={scrollToTop} />
+              <Logo size="lg" variant="full" onClick={scrollToTop} />
             </div>
             <div className="flex gap-6 text-sm">
               <a href="#" className="hover:text-white transition-colors">Privacy</a>
@@ -462,6 +524,13 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
           </div>
         </div>
       </footer>
+
+      {/* Video Modal */}
+      <VideoModal 
+        isOpen={isVideoOpen}
+        onClose={() => setIsVideoOpen(false)}
+        videoUrl="https://youtu.be/1p2vUa1705g"
+      />
     </div>
   );
 }

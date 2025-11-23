@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -14,9 +14,11 @@ import {
   Star,
   Undo,
   TrendingUp,
-  Sparkles
+  Sparkles,
+  Loader2
 } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
+import { ProfileService } from '../services/profileService';
 
 interface Job {
   id: string;
@@ -34,85 +36,76 @@ interface Job {
 }
 
 export function JobSwiper() {
-  const [jobs, setJobs] = useState<Job[]>([
-    {
-      id: '1',
-      company: 'Amazon Web Services',
-      position: 'Senior Software Engineer',
-      location: 'Seattle, WA',
-      salary: '$140k - $180k',
-      type: 'Full-time',
-      experience: '5+ years',
-      matchScore: 95,
-      description: 'Join our team building next-generation cloud infrastructure. Work with cutting-edge technologies and solve problems at scale.',
-      tags: ['AWS', 'Python', 'Kubernetes', 'Distributed Systems'],
-      postedDays: 2
-    },
-    {
-      id: '2',
-      company: 'Google',
-      position: 'Frontend Engineer',
-      location: 'Mountain View, CA',
-      salary: '$130k - $170k',
-      type: 'Full-time',
-      experience: '3+ years',
-      matchScore: 88,
-      description: 'Build beautiful, fast, and accessible web applications used by millions. Collaborate with designers and product managers.',
-      tags: ['React', 'TypeScript', 'CSS', 'Performance'],
-      postedDays: 1
-    },
-    {
-      id: '3',
-      company: 'Microsoft',
-      position: 'Cloud Solutions Architect',
-      location: 'Redmond, WA',
-      salary: '$150k - $190k',
-      type: 'Full-time',
-      experience: '7+ years',
-      matchScore: 82,
-      description: 'Design and implement enterprise cloud solutions for Fortune 500 clients. Lead technical discussions and architecture reviews.',
-      tags: ['Azure', 'Architecture', 'DevOps', 'Leadership'],
-      postedDays: 5
-    },
-    {
-      id: '4',
-      company: 'Meta',
-      position: 'Full Stack Engineer',
-      location: 'Menlo Park, CA',
-      salary: '$135k - $175k',
-      type: 'Full-time',
-      experience: '4+ years',
-      matchScore: 91,
-      description: 'Build products that connect billions of people. Work on features from ideation to launch with high autonomy.',
-      tags: ['React', 'Node.js', 'GraphQL', 'Mobile'],
-      postedDays: 3
-    },
-    {
-      id: '5',
-      company: 'Apple',
-      position: 'iOS Engineer',
-      location: 'Cupertino, CA',
-      salary: '$145k - $185k',
-      type: 'Full-time',
-      experience: '5+ years',
-      matchScore: 79,
-      description: 'Create amazing user experiences for millions of Apple users. Work with the latest iOS technologies and frameworks.',
-      tags: ['Swift', 'iOS', 'UIKit', 'SwiftUI'],
-      postedDays: 7
-    }
-  ]);
-
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [likedJobs, setLikedJobs] = useState<Job[]>([]);
   const [passedJobs, setPassedJobs] = useState<Job[]>([]);
   const [lastAction, setLastAction] = useState<'like' | 'pass' | null>(null);
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-200, 200], [-25, 25]);
+  const opacity = useTransform(x, [-200, -100, 0, 100, 200], [0, 1, 1, 1, 0]);
+
+  // Load AI-generated jobs on mount
+  useEffect(() => {
+    loadAIJobs();
+  }, []);
+
+  const loadAIJobs = async () => {
+    try {
+      setLoading(true);
+      
+      // Get user profile
+      const userId = ProfileService.getUserId();
+      const userProfile = await ProfileService.getProfile(userId);
+      
+      if (!userProfile) {
+        toast.error('Please complete your profile first');
+        setLoading(false);
+        return;
+      }
+
+      // Generate jobs with AI
+      const response = await fetch('http://localhost:3001/api/ai-jobs/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userProfile: {
+            currentRole: userProfile.profile?.currentRole,
+            targetRole: userProfile.profile?.targetRole,
+            skills: userProfile.profile?.skills,
+            experience: userProfile.profile?.experience,
+            location: userProfile.profile?.location,
+            salaryExpectation: userProfile.profile?.salaryExpectation,
+          },
+          count: 15,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to generate jobs');
+
+      const data = await response.json();
+      setJobs(data.jobs);
+      toast.success(`🤖 Generated ${data.jobs.length} personalized jobs with AI!`);
+    } catch (error: any) {
+      console.error('Error loading AI jobs:', error);
+      toast.error('Failed to load jobs: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const currentJob = jobs[currentIndex];
 
-  const handleLike = () => {
+  const handleLike = async () => {
     if (currentJob) {
       setLikedJobs([...likedJobs, currentJob]);
       setLastAction('like');
+      
+      // Celebrate! 🎉
+      const { celebrate } = await import('../utils/celebrations');
+      celebrate.jobSaved();
+      
       toast.success(`❤️ Saved ${currentJob.position} at ${currentJob.company}`);
       nextCard();
     }
@@ -153,6 +146,55 @@ export function JobSwiper() {
     if (score >= 70) return 'text-yellow-600 bg-yellow-50';
     return 'text-orange-600 bg-orange-50';
   };
+
+  // Show loading state with skeleton
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-pink-50 via-white to-purple-50 p-6">
+        <div className="max-w-2xl mx-auto">
+          <div className="mb-8 text-center">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <div className="bg-gradient-to-br from-pink-500 to-purple-500 p-3 rounded-xl">
+                <Heart className="w-6 h-6 text-white" />
+              </div>
+              <h1 className="text-3xl">Job Swiper</h1>
+            </div>
+            <p className="text-slate-600">🤖 AI is generating personalized jobs for you...</p>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="h-24 bg-white rounded-lg border border-slate-200 animate-pulse" />
+            <div className="h-24 bg-white rounded-lg border border-slate-200 animate-pulse" />
+            <div className="h-24 bg-white rounded-lg border border-slate-200 animate-pulse" />
+          </div>
+          
+          <div className="relative h-[600px]">
+            <Card className="w-full max-w-md mx-auto h-[550px] p-8">
+              <div className="space-y-4 animate-pulse">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2 flex-1">
+                    <div className="h-6 bg-slate-200 rounded w-3/4" />
+                    <div className="h-4 bg-slate-200 rounded w-1/2" />
+                  </div>
+                  <div className="h-12 w-12 bg-slate-200 rounded-full" />
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-slate-200 rounded w-full" />
+                  <div className="h-4 bg-slate-200 rounded w-5/6" />
+                  <div className="h-4 bg-slate-200 rounded w-4/6" />
+                </div>
+                <div className="flex gap-2">
+                  <div className="h-6 w-16 bg-slate-200 rounded" />
+                  <div className="h-6 w-20 bg-slate-200 rounded" />
+                  <div className="h-6 w-16 bg-slate-200 rounded" />
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-white to-purple-50 p-6">

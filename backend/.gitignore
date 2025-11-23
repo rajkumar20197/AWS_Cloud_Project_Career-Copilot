@@ -1,0 +1,43 @@
+# Backend-specific .gitignore
+
+# Environment variables (CRITICAL!)
+.env
+.env.local
+.env.production
+.env.test
+
+# AWS credentials
+.aws/
+credentials.json
+
+# SSL certificates
+*.pem
+*.key
+*.cert
+*.crt
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
+
+# Uploads
+uploads/
+temp/
+
+# Session storage
+sessions/
+
+# Cache
+.cache/

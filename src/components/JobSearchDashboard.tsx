@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -25,16 +25,44 @@ import {
   XCircle,
   Calendar,
   ExternalLink,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react';
 import type { Job } from '../types';
-import { mockJobs } from '../services/mockData';
+import { DataService } from '../services/dataService';
+import { AWSConfigStatus } from './AWSConfigStatus';
+import { DebugPanel } from './DebugPanel';
+import { toast } from 'sonner';
 
 export function JobSearchDashboard() {
-  const [jobs] = useState<Job[]>(mockJobs);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [filterSource, setFilterSource] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+
+  useEffect(() => {
+    loadJobs();
+  }, []);
+
+  const loadJobs = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const fetchedJobs = await DataService.fetchJobs();
+      setJobs(fetchedJobs);
+      toast.success(`Loaded ${fetchedJobs.length} job opportunities`);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load jobs');
+      toast.error('Failed to load jobs: ' + err.message);
+      // Fallback to cached jobs
+      setJobs(DataService.getJobs());
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredJobs = jobs.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -68,6 +96,12 @@ export function JobSearchDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* AWS Configuration Status */}
+      <AWSConfigStatus />
+      
+      {/* Debug Panel */}
+      <DebugPanel />
+
       {/* Header */}
       <div>
         <h1 className="text-3xl mb-2">AI-Powered Job Search</h1>
@@ -76,6 +110,37 @@ export function JobSearchDashboard() {
         </p>
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <Card className="p-8 text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
+          <p className="text-slate-600">Loading job opportunities...</p>
+        </Card>
+      )}
+
+      {/* Error State */}
+      {error && !loading && (
+        <Card className="p-6 border-red-200 bg-red-50">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium text-red-900">Error Loading Jobs</p>
+              <p className="text-sm text-red-700 mt-1">{error}</p>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="mt-3"
+                onClick={loadJobs}
+              >
+                Try Again
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {!loading && jobs.length > 0 && (
+      <>
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-4">
@@ -335,6 +400,8 @@ export function JobSearchDashboard() {
           )}
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }
