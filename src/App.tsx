@@ -3,6 +3,7 @@ import './config/cognito'; // Initialize AWS Cognito
 import { EnhancedLandingPage } from './components/EnhancedLandingPage';
 import { LoginPage } from './components/LoginPage';
 import { Onboarding } from './components/Onboarding';
+import { AuthGuard } from './components/AuthGuard';
 import { InteractiveDashboard } from './components/InteractiveDashboard';
 import { JobSearchDashboard } from './components/JobSearchDashboard';
 import { JobSwiper } from './components/JobSwiper';
@@ -80,11 +81,7 @@ export default function App() {
   }, []);
 
   const handleGetStarted = () => {
-    if (!isLoggedIn) {
-      setCurrentPage('login');
-    } else {
-      setCurrentPage('onboarding');
-    }
+    setCurrentPage('login');
   };
 
   const handleLogin = (userData?: any) => {
@@ -97,14 +94,6 @@ export default function App() {
     } else {
       setCurrentPage('onboarding');
     }
-  };
-
-  // Temporary bypass for Cognito issues
-  const handleBypassAuth = () => {
-    console.log('🔄 Bypassing authentication due to Cognito user pool issues');
-    setIsLoggedIn(true);
-    setCurrentPage('onboarding');
-    toast.success('Authentication bypassed - you can now test the platform!');
   };
 
   const handleBackToLanding = () => {
@@ -142,7 +131,7 @@ export default function App() {
 
   const renderPage = () => {
     if (currentPage === 'landing') {
-      return <EnhancedLandingPage onGetStarted={handleGetStarted} onBypassAuth={handleBypassAuth} />;
+      return <EnhancedLandingPage onGetStarted={handleGetStarted} />;
     }
 
     if (currentPage === 'login') {
@@ -150,11 +139,16 @@ export default function App() {
     }
 
     if (currentPage === 'onboarding') {
-      return <Onboarding onComplete={handleOnboardingComplete} />;
+      return (
+        <AuthGuard onAuthRequired={() => setCurrentPage('login')}>
+          <Onboarding onComplete={handleOnboardingComplete} />
+        </AuthGuard>
+      );
     }
 
-    // Dashboard pages with sidebar
+    // Dashboard pages with sidebar - protected by authentication
     return (
+      <AuthGuard onAuthRequired={() => setCurrentPage('login')}>
       <div className="flex min-h-screen bg-slate-50">
         {/* Sidebar */}
         <aside
@@ -228,13 +222,31 @@ export default function App() {
                 </div>
                 {isSidebarOpen && (
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm truncate">Alex Johnson</p>
-                    <p className="text-xs text-slate-500">Graduate</p>
+                    <p className="text-sm truncate">{userData?.name || 'User'}</p>
+                    <p className="text-xs text-slate-500">{userData?.email || 'Graduate'}</p>
                   </div>
                 )}
               </div>
               {isSidebarOpen && (
-                <Button variant="outline" className="w-full mt-2" size="sm">
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-2" 
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      const { signOut } = await import('aws-amplify/auth');
+                      await signOut();
+                      setIsLoggedIn(false);
+                      setIsOnboarded(false);
+                      setUserData(null);
+                      setCurrentPage('landing');
+                      toast.success('Logged out successfully');
+                    } catch (error) {
+                      console.error('Logout error:', error);
+                      toast.error('Logout failed');
+                    }
+                  }}
+                >
                   <LogOut className="w-4 h-4 mr-2" />
                   Logout
                 </Button>
@@ -265,7 +277,9 @@ export default function App() {
                 </button>
                 <div>
                   <h1 className="text-xl">AI Career Agent Platform</h1>
-                  <p className="text-sm text-slate-600">Powered by AWS Bedrock Claude 3.5 Haiku</p>
+                  <p className="text-sm text-slate-600">
+                    Authenticated • Powered by AWS Bedrock Claude 3.5 Haiku
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -296,6 +310,7 @@ export default function App() {
           </div>
         </main>
       </div>
+      </AuthGuard>
     );
   };
 
@@ -312,7 +327,7 @@ function DashboardHome({ onNavigate }: { onNavigate: (page: NavigationPage) => v
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl mb-2">Welcome Back, Alex! 👋</h1>
+        <h1 className="text-3xl mb-2">Welcome Back! 👋</h1>
         <p className="text-slate-600">Here's your career progress overview</p>
       </div>
 

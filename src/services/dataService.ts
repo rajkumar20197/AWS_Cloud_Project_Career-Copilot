@@ -37,12 +37,17 @@ export class DataService {
     return this.userProfile;
   }
 
-  // Fetch jobs using real AI only - Production Mode
+  // Fetch jobs using real AI - requires authentication
   static async fetchJobs(): Promise<Job[]> {
-    console.log('🚀 DataService.fetchJobs() - Production Mode (Real AI Only)');
-    console.log('✅ AWS Bedrock enabled for job matching');
-
-    // Always use real AI - no mock data in production mode
+    console.log('🚀 DataService.fetchJobs() - Authenticated Mode');
+    
+    // Check if user is authenticated
+    try {
+      const { getCurrentUser } = await import('aws-amplify/auth');
+      await getCurrentUser();
+    } catch (error) {
+      throw new Error('Authentication required. Please log in to access job data.');
+    }
 
     try {
       const user = this.getUserProfile();

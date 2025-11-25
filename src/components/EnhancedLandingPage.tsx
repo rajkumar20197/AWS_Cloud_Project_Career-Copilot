@@ -28,10 +28,9 @@ import {
 
 interface EnhancedLandingPageProps {
   onGetStarted: () => void;
-  onBypassAuth?: () => void;
 }
 
-export function EnhancedLandingPage({ onGetStarted, onBypassAuth }: EnhancedLandingPageProps) {
+export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const { scrollYProgress } = useScroll();
