@@ -157,7 +157,7 @@ const suspiciousPatterns = [
   /on\w+\s*=/gi, // Event handlers
   /\bUNION\b.*\bSELECT\b/gi, // SQL injection
   /\bDROP\b.*\bTABLE\b/gi, // SQL injection
-  /../g, // Path traversal
+  /\.\.\/|\.\.\\/, // Path traversal (fixed pattern)
 ];
 
 function detectSuspiciousActivity(req, res, next) {

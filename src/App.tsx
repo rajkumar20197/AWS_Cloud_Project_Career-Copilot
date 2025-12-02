@@ -16,6 +16,10 @@ import { OfferComparison } from './components/OfferComparison';
 import { MarketIntelligence } from './components/MarketIntelligence';
 import { GmailIntegration } from './components/GmailIntegration';
 import { SettingsPage } from './components/SettingsPage';
+import MorningDashboard from './components/MorningDashboard';
+import SchedulingDashboard from './components/SchedulingDashboard';
+import AvailabilitySettings from './components/AvailabilitySettings';
+import ApplicationTrackingDashboard from './components/ApplicationTrackingDashboard';
 import { Logo } from './components/Logo';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
@@ -39,6 +43,9 @@ import {
   Target,
   Scale,
   Sparkles,
+  Calendar,
+  Bot,
+  Clock,
 } from 'lucide-react';
 import type { NavigationPage } from './types';
 import { toast } from 'sonner';
@@ -116,6 +123,10 @@ export default function App() {
 
   const navigationItems = [
     { id: 'dashboard' as NavigationPage, label: 'Dashboard', icon: Home, badge: null },
+    { id: 'morning-dashboard' as NavigationPage, label: 'Morning Brief', icon: Clock, badge: '3 today' },
+    { id: 'scheduling-dashboard' as NavigationPage, label: 'AI Scheduler', icon: Bot, badge: 'Active' },
+    { id: 'availability-settings' as NavigationPage, label: 'Availability', icon: Calendar, badge: null },
+    { id: 'application-tracking' as NavigationPage, label: 'App Tracking', icon: TrendingUp, badge: '12 active' },
     { id: 'job-search' as NavigationPage, label: 'Job Search', icon: Search, badge: '6 new' },
     { id: 'job-swiper' as NavigationPage, label: 'Job Swiper', icon: Heart, badge: '12 new' },
     { id: 'application-tracker' as NavigationPage, label: 'Applications', icon: Briefcase, badge: null },
@@ -296,6 +307,10 @@ export default function App() {
           {/* Page Content */}
           <div className="p-6">
             {currentPage === 'dashboard' && <InteractiveDashboard onNavigate={setCurrentPage} />}
+            {currentPage === 'morning-dashboard' && <MorningDashboard />}
+            {currentPage === 'scheduling-dashboard' && <SchedulingDashboard />}
+            {currentPage === 'availability-settings' && <AvailabilitySettings />}
+            {currentPage === 'application-tracking' && <ApplicationTrackingDashboard />}
             {currentPage === 'job-search' && <JobSearchDashboard />}
             {currentPage === 'job-swiper' && <JobSwiper />}
             {currentPage === 'application-tracker' && <ApplicationTracker />}
@@ -410,19 +425,19 @@ function DashboardHome({ onNavigate }: { onNavigate: (page: NavigationPage) => v
 
         <div
           className="bg-white rounded-xl p-6 border-2 border-slate-200 hover:border-orange-500 cursor-pointer transition-colors"
-          onClick={() => onNavigate('gmail')}
+          onClick={() => onNavigate('morning-dashboard' as NavigationPage)}
         >
           <div className="flex items-start justify-between mb-4">
             <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Mail className="w-6 h-6 text-orange-600" />
+              <Clock className="w-6 h-6 text-orange-600" />
             </div>
-            <Badge className="bg-orange-100 text-orange-700">3 new</Badge>
+            <Badge className="bg-orange-100 text-orange-700">3 today</Badge>
           </div>
-          <h3 className="text-xl mb-2">Interview Invitations</h3>
+          <h3 className="text-xl mb-2">Morning Dashboard</h3>
           <p className="text-slate-600 mb-4">
-            AI detected 2 new interview invitations in your Gmail inbox
+            "Wake up → Check Calendar → See Everything" - Your daily career briefing
           </p>
-          <Button className="w-full">Check Calendar →</Button>
+          <Button className="w-full">View Today's Schedule →</Button>
         </div>
       </div>
     </div>

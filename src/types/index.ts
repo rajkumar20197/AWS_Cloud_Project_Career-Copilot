@@ -125,11 +125,57 @@ export interface CalendarEvent {
   type: 'interview' | 'networking' | 'deadline';
 }
 
+export interface AvailabilityPreferences {
+  workingHours: { start: string; end: string };
+  timeZone: string;
+  bufferTime: number;
+  maxInterviewsPerDay: number;
+  unavailableDays: string[];
+  preferredDays: string[];
+  autoResponseEnabled: boolean;
+  responseDelay: number;
+  requireConfirmation: boolean;
+}
+
+export interface SchedulingEmail {
+  id: string;
+  messageId: string;
+  company: string;
+  position: string;
+  contactName?: string;
+  contactEmail: string;
+  suggestedTimes?: string[];
+  interviewType: 'phone' | 'video' | 'in-person';
+  duration?: number;
+  urgency: 'high' | 'medium' | 'low';
+  schedulingDeadline?: string;
+  needsScheduling: boolean;
+  processed: boolean;
+  responseGenerated?: boolean;
+}
+
+export interface AvailabilitySlot {
+  start: string;
+  end: string;
+  formatted: string;
+}
+
+export interface AgentStats {
+  emailsProcessed: number;
+  responsesGenerated: number;
+  interviewsScheduled: number;
+  averageResponseTime: string;
+}
+
 export type NavigationPage = 
   | 'landing'
   | 'login'
   | 'onboarding'
   | 'dashboard'
+  | 'morning-dashboard'
+  | 'scheduling-dashboard'
+  | 'availability-settings'
+  | 'application-tracking'
   | 'job-search'
   | 'job-swiper'
   | 'application-tracker'

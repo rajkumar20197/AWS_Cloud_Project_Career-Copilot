@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
-import { Check, Zap, Crown, Sparkles } from 'lucide-react';
+import { Check, Zap, Crown, Sparkles, Shield, CreditCard } from 'lucide-react';
+import { PaymentForm } from './PaymentForm';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -67,6 +68,7 @@ const pricingTiers: PricingTier[] = [
 
 export default function PricingPage() {
   const [loading, setLoading] = useState<string | null>(null);
+  const [showPaymentForm, setShowPaymentForm] = useState<string | null>(null);
 
   const handleSubscribe = async (priceId: string) => {
     if (!priceId) {
@@ -75,36 +77,58 @@ export default function PricingPage() {
       return;
     }
 
-    setLoading(priceId);
-
-    try {
-      // Call backend to create checkout session
-      const response = await fetch('/api/payment/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({ plan: priceId }),
-      });
-
-      const { sessionId } = await response.json();
-
-      // Redirect to Stripe Checkout
-      const stripe = await stripePromise;
-      const { error } = await stripe!.redirectToCheckout({ sessionId });
-
-      if (error) {
-        console.error('Stripe error:', error);
-        alert('Payment failed. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Something went wrong. Please try again.');
-    } finally {
-      setLoading(null);
+    // Check if user is authenticated
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      alert('Please log in to subscribe');
+      return;
     }
+
+    // Show secure payment form
+    setShowPaymentForm(priceId);
   };
+
+  const handlePaymentSuccess = () => {
+    setShowPaymentForm(null);
+    alert('Payment successful! Welcome to your new plan.');
+    // Redirect to dashboard or success page
+    window.location.href = '/dashboard';
+  };
+
+  const handlePaymentCancel = () => {
+    setShowPaymentForm(null);
+  };
+
+  // Show payment form if selected
+  if (showPaymentForm) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Complete Your Subscription
+            </h1>
+            <p className="text-gray-600">
+              Subscribe to {showPaymentForm.charAt(0).toUpperCase() + showPaymentForm.slice(1)} Plan
+            </p>
+          </div>
+          
+          <PaymentForm
+            plan={showPaymentForm as 'pro' | 'premium'}
+            onSuccess={handlePaymentSuccess}
+            onCancel={handlePaymentCancel}
+          />
+          
+          <div className="mt-8 text-center">
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+              <Shield className="w-4 h-4" />
+              <span>Secured by Stripe • 256-bit SSL encryption</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4">

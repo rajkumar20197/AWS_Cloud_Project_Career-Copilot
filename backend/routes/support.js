@@ -219,15 +219,15 @@ async function generateBotResponse(message) {
   }
 
   if (lowerMessage.includes('cancel') || lowerMessage.includes('refund')) {
-    return 'You can cancel your subscription anytime from Settings > Billing. If you need a refund, please email support@careercopilot.com and we\'ll help you out.';
+    return 'You can cancel your subscription anytime from Settings > Billing. If you need a refund, please email support@aicareeragentcoach.com and we\'ll help you out.';
   }
 
   if (lowerMessage.includes('help') || lowerMessage.includes('support')) {
-    return 'I\'m here to help! You can:\n- Email us at support@careercopilot.com\n- Call us at +1 (555) CAREER-1\n- Browse our Help Center\n\nWhat do you need help with?';
+    return 'I\'m here to help! You can:\n- Email us at support@aicareeragentcoach.com\n- Call us at +1 (555) CAREER-1\n- Browse our Help Center\n\nWhat do you need help with?';
   }
 
   // Default response
-  return 'Thanks for your message! I\'m still learning, but I\'ve notified our support team. They\'ll get back to you shortly. In the meantime, you can email support@careercopilot.com or call +1 (555) CAREER-1.';
+  return 'Thanks for your message! I\'m still learning, but I\'ve notified our support team. They\'ll get back to you shortly. In the meantime, you can email support@aicareeragentcoach.com or call +1 (555) CAREER-1.';
 }
 
 module.exports = router;

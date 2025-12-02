@@ -24,7 +24,7 @@ const getBedrockClient = () => {
 const MODEL_ID = config.aws.bedrockModelId;
 
 export class BedrockService {
-  private static async callBedrock(prompt: string, maxTokens: number = 1024): Promise<string> {
+  public static async callBedrock(prompt: string, maxTokens: number = 1024): Promise<string> {
     // Check if we should use real AWS
     if (!shouldUseRealAWS()) {
       const validation = validateAwsConfig();

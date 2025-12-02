@@ -6,12 +6,17 @@ export const config = {
     secretAccessKey: import.meta.env.VITE_AWS_SECRET_ACCESS_KEY,
     bedrockModelId: import.meta.env.VITE_BEDROCK_MODEL_ID || 'anthropic.claude-3-5-haiku-20241022-v1:0',
   },
+  google: {
+    apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
+    clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+  },
   api: {
     url: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
   },
   features: {
     useMockData: import.meta.env.VITE_USE_MOCK_DATA === 'true',
     enableAwsBedrock: import.meta.env.VITE_ENABLE_AWS_BEDROCK !== 'false',
+    enableGoogleIntegration: import.meta.env.VITE_GOOGLE_API_KEY && import.meta.env.VITE_GOOGLE_CLIENT_ID,
   },
   environment: import.meta.env.VITE_ENVIRONMENT || 'development',
 };

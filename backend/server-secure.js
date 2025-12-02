@@ -70,8 +70,15 @@ app.use('/api/auth', security.authLimiter);
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
-// Payment routes (payment rate limiting + auth required)
-app.use('/api/payment', security.paymentLimiter, authenticateToken);
+// CSRF Token endpoint
+app.get('/api/auth/csrf-token', (req, res) => {
+  const token = require('crypto').randomBytes(32).toString('hex');
+  req.session = req.session || {};
+  req.session.csrfToken = token;
+  res.json({ token });
+});
+
+// Payment routes (enhanced security + auth required)
 const paymentRoutes = require('./routes/payment');
 app.use('/api/payment', paymentRoutes);
 
@@ -118,6 +125,15 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
+// Validate security configuration before starting
+const { logSecurityStatus } = require('./utils/securityValidator');
+const securityValidation = logSecurityStatus();
+
+if (!securityValidation.isSecure && process.env.NODE_ENV === 'production') {
+  console.error('❌ Cannot start server in production with security issues');
+  process.exit(1);
+}
+
 app.listen(PORT, () => {
   console.log(`🔒 Secure server running on port ${PORT}`);
   console.log(`🛡️  Security features enabled:`);
@@ -129,6 +145,8 @@ app.listen(PORT, () => {
   console.log(`   ✓ Input sanitization`);
   console.log(`   ✓ Request size limiting`);
   console.log(`   ✓ Suspicious activity detection`);
+  console.log(`   ✓ Payment fraud detection`);
+  console.log(`   ✓ Enhanced webhook security`);
 });
 
 module.exports = app;

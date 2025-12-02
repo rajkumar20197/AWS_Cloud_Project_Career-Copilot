@@ -1,4 +1,4 @@
-// Quick test script for profile creation
+can we do somthing now// Quick test script for profile creation
 const testProfile = async () => {
   const testData = {
     userId: `test-user-${Date.now()}`,

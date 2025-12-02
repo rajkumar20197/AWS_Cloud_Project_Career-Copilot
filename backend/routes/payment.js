@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const stripeService = require('../services/stripeService');
 const { authenticateToken } = require('../middleware/auth');
+const { 
+  detectPaymentFraud, 
+  validatePaymentData, 
+  logPaymentSecurity,
+  enhancedPaymentLimiter 
+} = require('../middleware/paymentSecurity');
 
 // Pricing tiers (Price IDs from Stripe Dashboard)
 const PRICING = {
@@ -13,7 +19,13 @@ const PRICING = {
  * POST /api/payment/create-checkout-session
  * Create a Stripe checkout session for subscription
  */
-router.post('/create-checkout-session', authenticateToken, async (req, res) => {
+router.post('/create-checkout-session', 
+  enhancedPaymentLimiter,
+  authenticateToken, 
+  validatePaymentData,
+  detectPaymentFraud,
+  logPaymentSecurity,
+  async (req, res) => {
   try {
     const { plan } = req.body; // 'pro' or 'premium'
     const userId = req.user.userId;
@@ -114,23 +126,46 @@ router.post('/cancel-subscription', authenticateToken, async (req, res) => {
  */
 router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const signature = req.headers['stripe-signature'];
+  const clientIP = req.ip || req.connection.remoteAddress;
 
   try {
-    // Verify webhook signature
+    // Log webhook attempt for security monitoring
+    console.log('Webhook attempt from IP:', clientIP, 'Signature present:', !!signature);
+
+    // Verify webhook signature (CRITICAL SECURITY)
     const event = stripeService.verifyWebhookSignature(req.body, signature);
 
-    // Handle the event
+    // Additional security: Verify webhook source IP (Stripe's IPs)
+    const stripeIPs = [
+      '54.187.174.169', '54.187.205.235', '54.187.216.72', '54.241.31.99',
+      '54.241.31.102', '54.241.34.107'
+    ];
+    
+    // In production, uncomment this check:
+    // if (!stripeIPs.includes(clientIP)) {
+    //   console.warn('Webhook from non-Stripe IP:', clientIP);
+    //   return res.status(403).json({ error: 'Forbidden' });
+    // }
+
+    // Handle the event with error handling
     const result = await stripeService.handleWebhookEvent(event);
 
     if (result) {
       // Update database based on event
       // TODO: Update user subscription status in DynamoDB
-      console.log('Webhook processed:', result);
+      console.log('Webhook processed successfully:', result);
+      
+      // Send confirmation to monitoring service
+      // TODO: Send to CloudWatch/DataDog
     }
 
     res.json({ received: true });
   } catch (error) {
     console.error('Webhook error:', error);
+    
+    // Security alert for failed webhook
+    // TODO: Send alert to admin
+    
     res.status(400).json({ error: 'Webhook signature verification failed' });
   }
 });
