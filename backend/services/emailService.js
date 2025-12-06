@@ -5,15 +5,43 @@ const nodemailer = require('nodemailer');
  * Sends emails for payment failures, successes, etc.
  */
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-  port: process.env.EMAIL_PORT || 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
+// Email service configuration with better error handling
+let transporter = null;
+let isConfigured = false;
+
+try {
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+    transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.EMAIL_PORT) || 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: false // For development only
+      }
+    });
+    
+    // Verify connection configuration
+    transporter.verify((error, success) => {
+      if (error) {
+        console.log('📧 Gmail SMTP: ❌ Configuration error:', error.message);
+        isConfigured = false;
+      } else {
+        console.log('📧 Gmail SMTP: ✅ Ready to send emails');
+        isConfigured = true;
+      }
+    });
+  } else {
+    console.log('📧 Gmail SMTP: ❌ Not configured (missing EMAIL_USER or EMAIL_PASSWORD)');
+    isConfigured = false;
+  }
+} catch (error) {
+  console.error('📧 Gmail SMTP initialization error:', error.message);
+  isConfigured = false;
+}
 
 /**
  * Send payment failed email to user
@@ -147,4 +175,50 @@ async function sendPaymentSuccessEmail(userEmail, userName, amount, plan) {
 module.exports = {
   sendPaymentFailedEmail,
   sendPaymentSuccessEmail,
+};
+
+/**
+ * Get email service status
+ */
+function getEmailServiceStatus() {
+  return {
+    configured: isConfigured,
+    service: 'Gmail SMTP',
+    status: isConfigured ? '✅ Ready' : '❌ Not configured',
+    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    port: process.env.EMAIL_PORT || 587,
+    user: process.env.EMAIL_USER ? process.env.EMAIL_USER.replace(/(.{3}).*(@.*)/, '$1***$2') : 'Not set'
+  };
+}
+
+/**
+ * Send test email
+ */
+async function sendTestEmail(to = 'test@example.com') {
+  if (!isConfigured || !transporter) {
+    throw new Error('Email service not configured');
+  }
+
+  const mailOptions = {
+    from: process.env.EMAIL_FROM || '"AI Career Agent Coach" <noreply@aicareeragentcoach.com>',
+    to: to,
+    subject: 'Test Email - AI Career Agent Coach',
+    html: `
+      <h2>🎉 Email Service Test</h2>
+      <p>This is a test email from the AI Career Agent Coach platform.</p>
+      <p>If you received this, the email service is working correctly!</p>
+      <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+    `
+  };
+
+  const result = await transporter.sendMail(mailOptions);
+  console.log('📧 Test email sent:', result.messageId);
+  return result;
+}
+
+module.exports = {
+  sendPaymentFailedEmail,
+  sendPaymentSuccessEmail,
+  getEmailServiceStatus,
+  sendTestEmail
 };

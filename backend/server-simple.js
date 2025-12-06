@@ -1,44 +1,120 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Security Middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+    },
+  },
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  }
+}));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
+
+// Stricter rate limiting for auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 auth requests per windowMs
+  message: 'Too many authentication attempts, please try again later.',
+  skipSuccessfulRequests: true,
+});
+
+// CORS with specific origins (update for production)
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://aicareeragentcoach.com', 'https://aicareeragentcoach.agency']
+    : ['http://localhost:3000', 'http://localhost:3001'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
+// Body parsing with size limits
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Import services for status checking
+const emailService = require('./services/emailService');
+const googleCalendarService = require('./services/googleCalendarService');
 
 // Routes
 app.get('/', (req, res) => {
+  const emailStatus = emailService.getEmailServiceStatus();
+  const calendarStatus = googleCalendarService.getStatus();
+  
   res.json({ 
-    message: '🚀 Career Copilot Backend Server',
+    message: '🚀 AI Career Agent Coach Backend Server',
     status: 'running',
+    timestamp: new Date().toISOString(),
+    services: {
+      email: emailStatus,
+      calendar: calendarStatus,
+      admin: {
+        configured: true,
+        service: 'Admin API',
+        status: '✅ Ready',
+        endpoints: ['/api/admin/login', '/api/admin/stats', '/api/admin/users']
+      }
+    },
     features: {
-      gmail: '✅ Configured',
-      calendar: '✅ Configured',
-      email: '✅ Working'
+      gmail: emailStatus.status,
+      calendar: calendarStatus.status,
+      admin: '✅ API Ready',
+      authentication: '✅ JWT + MFA',
+      security: '✅ Enterprise Grade'
     }
   });
 });
 
-// Email routes
-const emailService = require('./services/emailService');
+// API Routes
+const adminRoutes = require('./routes/admin');
+const adminServicesRoutes = require('./routes/adminServices');
+const authRoutes = require('./routes/auth');
+const emailRoutes = require('./routes/email');
+const calendarRoutes = require('./routes/calendar');
+const aiRoutes = require('./routes/ai');
 
+app.use('/api/admin', authLimiter, adminRoutes);
+app.use('/api/admin/services', adminServicesRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/email', emailRoutes);
+app.use('/api/calendar', calendarRoutes);
+app.use('/api/ai', aiRoutes);
+
+// Legacy email test route (keeping for compatibility)
 app.post('/api/test/email', async (req, res) => {
   try {
     const { to, subject, body } = req.body;
-    await emailService.sendTestEmail(to || 'rajkumarthota20197@gmail.com');
+    await emailService.sendTestEmail(to || 'test@example.com');
     res.json({ success: true, message: 'Email sent successfully!' });
   } catch (error) {
     console.error('Email error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
-
-// Google Calendar routes
-const googleRoutes = require('./routes/google');
-app.use('/api/google', googleRoutes);
 
 // Profile routes (in-memory storage for demo)
 let profiles = {};

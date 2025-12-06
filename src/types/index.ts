@@ -186,4 +186,7 @@ export type NavigationPage =
   | 'mock-interview'
   | 'skill-gap'
   | 'offer-comparison'
-  | 'settings';
+  | 'settings'
+  | 'test-components'
+  | 'system-tests'
+  | 'component-test';

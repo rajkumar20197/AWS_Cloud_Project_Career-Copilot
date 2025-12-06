@@ -1,250 +1,287 @@
-const rateLimit = require('express-rate-limit');
-const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
-const hpp = require('hpp');
-
 /**
- * Security Middleware for Career Copilot
- * Protects against common attacks: SQL injection, XSS, CSRF, DDoS, etc.
+ * Security Middleware
+ * Comprehensive security protection for the application
  */
 
-// 1. Rate Limiting - Prevent DDoS and brute force attacks
-const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const { logSecurityEvent } = require('../config/security');
 
-// Stricter rate limit for authentication endpoints
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Only 5 login attempts per 15 minutes
-  message: 'Too many login attempts, please try again after 15 minutes.',
-  skipSuccessfulRequests: true, // Don't count successful logins
-});
+/**
+ * Security headers middleware
+ */
+function securityHeaders() {
+  return helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "https:"],
+        scriptSrc: ["'self'"],
+        connectSrc: ["'self'", "https://api.stripe.com"],
+        frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true
+    },
+    noSniff: true,
+    frameguard: { action: 'deny' },
+    xssFilter: true,
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
+  });
+}
 
-// Payment endpoint rate limiting
-const paymentLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // Max 10 payment attempts per hour
-  message: 'Too many payment attempts, please try again later.',
-});
+/**
+ * Request sanitization middleware
+ */
+function sanitizeRequest(req, res, next) {
+  // Sanitize request body
+  if (req.body && typeof req.body === 'object') {
+    sanitizeObject(req.body);
+  }
+  
+  // Sanitize query parameters
+  if (req.query && typeof req.query === 'object') {
+    sanitizeObject(req.query);
+  }
+  
+  // Sanitize URL parameters
+  if (req.params && typeof req.params === 'object') {
+    sanitizeObject(req.params);
+  }
+  
+  next();
+}
 
-// AI endpoint rate limiting (expensive operations)
-const aiLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 10, // Max 10 AI requests per minute
-  message: 'Too many AI requests, please slow down.',
-});
+/**
+ * Recursively sanitize object properties
+ */
+function sanitizeObject(obj) {
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (typeof obj[key] === 'string') {
+        // Remove potentially dangerous characters
+        obj[key] = obj[key]
+          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
+          .replace(/javascript:/gi, '') // Remove javascript: protocol
+          .replace(/on\w+\s*=/gi, '') // Remove event handlers
+          .trim();
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        sanitizeObject(obj[key]);
+      }
+    }
+  }
+}
 
-// 2. Input Validation Middleware
-function validateInput(schema) {
+/**
+ * SQL injection protection middleware
+ */
+function preventSQLInjection(req, res, next) {
+  const sqlPatterns = [
+    /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)/i,
+    /(;|\-\-|\|\||&&)/,
+    /('|(\\')|('')|(%27)|(%2527))/,
+    /((\%3D)|(=))[^\n]*((\%27)|(\')|(\-\-)|(\%3B)|(;))/,
+    /\w*((\%27)|(\'))((\%6F)|o|(\%4F))((\%72)|r|(\%52))/,
+    /((\%27)|(\'))union/i
+  ];
+  
+  const checkForSQLInjection = (obj) => {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        const value = obj[key];
+        if (typeof value === 'string') {
+          for (const pattern of sqlPatterns) {
+            if (pattern.test(value)) {
+              logSecurityEvent('SQL_INJECTION_ATTEMPT', { 
+                field: key, 
+                value: value.substring(0, 100),
+                pattern: pattern.toString()
+              }, req);
+              return res.status(400).json({ 
+                error: 'Invalid input detected',
+                code: 'SECURITY_VIOLATION'
+              });
+            }
+          }
+        } else if (typeof value === 'object' && value !== null) {
+          const result = checkForSQLInjection(value);
+          if (result) return result;
+        }
+      }
+    }
+    return null;
+  };
+  
+  // Check request body
+  if (req.body) {
+    const result = checkForSQLInjection(req.body);
+    if (result) return result;
+  }
+  
+  // Check query parameters
+  if (req.query) {
+    const result = checkForSQLInjection(req.query);
+    if (result) return result;
+  }
+  
+  next();
+}
+
+/**
+ * XSS protection middleware
+ */
+function preventXSS(req, res, next) {
+  const xssPatterns = [
+    /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+    /<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi,
+    /javascript:/gi,
+    /on\w+\s*=/gi,
+    /<img[^>]+src[\\s]*=[\\s]*["\']javascript:/gi,
+    /<[^>]*style[\\s]*=[\\s]*["\'][^"\']*expression[\\s]*\(/gi
+  ];
+  
+  const checkForXSS = (obj) => {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        const value = obj[key];
+        if (typeof value === 'string') {
+          for (const pattern of xssPatterns) {
+            if (pattern.test(value)) {
+              logSecurityEvent('XSS_ATTEMPT', { 
+                field: key, 
+                value: value.substring(0, 100),
+                pattern: pattern.toString()
+              }, req);
+              return res.status(400).json({ 
+                error: 'Invalid input detected',
+                code: 'SECURITY_VIOLATION'
+              });
+            }
+          }
+        } else if (typeof value === 'object' && value !== null) {
+          const result = checkForXSS(value);
+          if (result) return result;
+        }
+      }
+    }
+    return null;
+  };
+  
+  if (req.body) {
+    const result = checkForXSS(req.body);
+    if (result) return result;
+  }
+  
+  if (req.query) {
+    const result = checkForXSS(req.query);
+    if (result) return result;
+  }
+  
+  next();
+}
+
+/**
+ * Request size limiter
+ */
+function limitRequestSize(maxSize = '10mb') {
   return (req, res, next) => {
-    const { error } = schema.validate(req.body);
-    if (error) {
-      return res.status(400).json({
-        error: 'Invalid input',
-        details: error.details.map((d) => d.message),
+    const contentLength = parseInt(req.headers['content-length']);
+    const maxBytes = parseSize(maxSize);
+    
+    if (contentLength > maxBytes) {
+      logSecurityEvent('REQUEST_SIZE_EXCEEDED', { 
+        contentLength, 
+        maxSize: maxBytes 
+      }, req);
+      return res.status(413).json({ 
+        error: 'Request too large',
+        code: 'REQUEST_TOO_LARGE'
       });
     }
+    
     next();
   };
 }
 
-// 3. SQL Injection Protection (for DynamoDB/RDS)
-function sanitizeInput(req, res, next) {
-  // Remove any potential SQL injection characters
-  const sanitize = (obj) => {
-    if (typeof obj === 'string') {
-      // Remove SQL keywords and special characters
-      return obj
-        .replace(/(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE)\b)/gi, '')
-        .replace(/[;'"\\]/g, '')
-        .trim();
+/**
+ * Parse size string to bytes
+ */
+function parseSize(size) {
+  const units = { b: 1, kb: 1024, mb: 1024 * 1024, gb: 1024 * 1024 * 1024 };
+  const match = size.toString().toLowerCase().match(/^(\d+(?:\.\d+)?)\s*(b|kb|mb|gb)?$/);
+  
+  if (!match) return 0;
+  
+  const value = parseFloat(match[1]);
+  const unit = match[2] || 'b';
+  
+  return Math.floor(value * units[unit]);
+}
+
+/**
+ * IP whitelist middleware (for admin endpoints)
+ */
+function ipWhitelist(allowedIPs = []) {
+  return (req, res, next) => {
+    const clientIP = req.ip || req.connection.remoteAddress;
+    
+    // In development, allow localhost
+    if (process.env.NODE_ENV === 'development') {
+      const localhostIPs = ['127.0.0.1', '::1', '::ffff:127.0.0.1'];
+      if (localhostIPs.includes(clientIP)) {
+        return next();
+      }
     }
-    if (typeof obj === 'object' && obj !== null) {
-      Object.keys(obj).forEach((key) => {
-        obj[key] = sanitize(obj[key]);
+    
+    if (allowedIPs.length > 0 && !allowedIPs.includes(clientIP)) {
+      logSecurityEvent('IP_BLOCKED', { clientIP, allowedIPs }, req);
+      return res.status(403).json({ 
+        error: 'Access denied from this IP address',
+        code: 'IP_BLOCKED'
       });
     }
-    return obj;
+    
+    next();
   };
-
-  req.body = sanitize(req.body);
-  req.query = sanitize(req.query);
-  req.params = sanitize(req.params);
-  next();
 }
 
-// 4. CSRF Protection
-function csrfProtection(req, res, next) {
-  // Verify CSRF token for state-changing operations
-  if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
-    const csrfToken = req.headers['x-csrf-token'];
-    const sessionToken = req.session?.csrfToken;
-
-    if (!csrfToken || csrfToken !== sessionToken) {
-      return res.status(403).json({ error: 'Invalid CSRF token' });
-    }
-  }
-  next();
-}
-
-// 5. Admin Route Protection
-function requireAdmin(req, res, next) {
-  if (!req.user || req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Admin access required' });
-  }
-  next();
-}
-
-// 6. API Key Validation (for external integrations)
-function validateApiKey(req, res, next) {
-  const apiKey = req.headers['x-api-key'];
-
-  if (!apiKey) {
-    return res.status(401).json({ error: 'API key required' });
-  }
-
-  // Validate API key (check against database)
-  // TODO: Implement API key validation
-  const validApiKeys = process.env.VALID_API_KEYS?.split(',') || [];
-
-  if (!validApiKeys.includes(apiKey)) {
-    return res.status(401).json({ error: 'Invalid API key' });
-  }
-
-  next();
-}
-
-// 7. Content Security Policy
-function setupCSP(app) {
-  app.use(
-    helmet.contentSecurityPolicy({
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", 'https://js.stripe.com'],
-        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-        imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
-        connectSrc: ["'self'", 'https://api.stripe.com', 'https://*.amazonaws.com'],
-        frameSrc: ["'self'", 'https://js.stripe.com'],
-        objectSrc: ["'none'"],
-        upgradeInsecureRequests: [],
-      },
-    })
-  );
-}
-
-// 8. Request Size Limiting (prevent large payload attacks)
-function limitRequestSize(req, res, next) {
-  const maxSize = 10 * 1024 * 1024; // 10MB
-  const contentLength = parseInt(req.headers['content-length'] || '0');
-
-  if (contentLength > maxSize) {
-    return res.status(413).json({ error: 'Request too large' });
-  }
-  next();
-}
-
-// 9. Suspicious Activity Detection
-const suspiciousPatterns = [
-  /<script[^>]*>.*?<\/script>/gi, // XSS attempts
-  /javascript:/gi, // JavaScript protocol
-  /on\w+\s*=/gi, // Event handlers
-  /\bUNION\b.*\bSELECT\b/gi, // SQL injection
-  /\bDROP\b.*\bTABLE\b/gi, // SQL injection
-  /\.\.\/|\.\.\\/, // Path traversal (fixed pattern)
-];
-
-function detectSuspiciousActivity(req, res, next) {
-  const checkString = JSON.stringify(req.body) + JSON.stringify(req.query);
-
-  for (const pattern of suspiciousPatterns) {
-    if (pattern.test(checkString)) {
-      console.warn('Suspicious activity detected:', {
-        ip: req.ip,
-        path: req.path,
-        pattern: pattern.toString(),
-      });
-
-      // Log to security monitoring service
-      // TODO: Send alert to admin
-
-      return res.status(400).json({ error: 'Invalid request detected' });
-    }
-  }
-  next();
-}
-
-// 10. IP Whitelist/Blacklist
-const blacklistedIPs = new Set();
-
-function checkIPBlacklist(req, res, next) {
-  const clientIP = req.ip || req.connection.remoteAddress;
-
-  if (blacklistedIPs.has(clientIP)) {
-    return res.status(403).json({ error: 'Access denied' });
-  }
-  next();
-}
-
-function addToBlacklist(ip) {
-  blacklistedIPs.add(ip);
-  console.log('IP blacklisted:', ip);
-}
-
-// 11. Secure Headers
-function setupSecureHeaders(app) {
-  app.use(helmet()); // Sets various HTTP headers for security
-  app.use(helmet.hidePoweredBy()); // Hide X-Powered-By header
-  app.use(helmet.noSniff()); // Prevent MIME type sniffing
-  app.use(helmet.frameguard({ action: 'deny' })); // Prevent clickjacking
-  app.use(helmet.xssFilter()); // XSS protection
-  app.use(helmet.hsts({ maxAge: 31536000, includeSubDomains: true })); // HTTPS enforcement
-}
-
-// 12. Request Logging (for security audits)
-function securityLogger(req, res, next) {
-  const logData = {
-    timestamp: new Date().toISOString(),
-    method: req.method,
-    path: req.path,
-    ip: req.ip,
-    userAgent: req.headers['user-agent'],
-    userId: req.user?.userId,
-  };
-
-  // Log sensitive operations
-  if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
-    console.log('Security log:', logData);
-    // TODO: Send to CloudWatch or security monitoring service
-  }
-
-  next();
+/**
+ * Comprehensive security middleware stack
+ */
+function applySecurity(app) {
+  // Security headers
+  app.use(securityHeaders());
+  
+  // Request sanitization
+  app.use(sanitizeRequest);
+  
+  // SQL injection protection
+  app.use(preventSQLInjection);
+  
+  // XSS protection
+  app.use(preventXSS);
+  
+  // Request size limiting
+  app.use(limitRequestSize('10mb'));
+  
+  console.log('🔒 Security middleware applied');
 }
 
 module.exports = {
-  generalLimiter,
-  authLimiter,
-  paymentLimiter,
-  aiLimiter,
-  validateInput,
-  sanitizeInput,
-  csrfProtection,
-  requireAdmin,
-  validateApiKey,
-  setupCSP,
-  setupSecureHeaders,
+  securityHeaders,
+  sanitizeRequest,
+  preventSQLInjection,
+  preventXSS,
   limitRequestSize,
-  detectSuspiciousActivity,
-  checkIPBlacklist,
-  addToBlacklist,
-  securityLogger,
-  mongoSanitize: mongoSanitize(),
-  xss: xss(),
-  hpp: hpp(),
+  ipWhitelist,
+  applySecurity
 };

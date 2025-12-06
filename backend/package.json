@@ -9,16 +9,20 @@
         "test": "node test-email.js && node test-calendar.js"
     },
     "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.943.0",
+        "@aws-sdk/lib-dynamodb": "^3.943.0",
+        "bcrypt": "^6.0.0",
         "bcryptjs": "^2.4.3",
         "cors": "^2.8.5",
+        "crypto": "^1.0.1",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
         "express-mongo-sanitize": "^2.2.0",
-        "express-rate-limit": "^7.1.5",
+        "express-rate-limit": "^7.5.1",
         "googleapis": "^128.0.0",
-        "helmet": "^7.1.0",
+        "helmet": "^7.2.0",
         "hpp": "^0.2.3",
-        "jsonwebtoken": "^9.0.2",
+        "jsonwebtoken": "^9.0.3",
         "nodemailer": "^7.0.11",
         "stripe": "^14.7.0",
         "xss-clean": "^0.1.4"

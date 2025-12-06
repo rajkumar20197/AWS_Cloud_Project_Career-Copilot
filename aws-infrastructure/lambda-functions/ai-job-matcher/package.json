@@ -1,0 +1,26 @@
+{
+    "name": "ai-job-matcher-lambda",
+    "version": "1.0.0",
+    "description": "Lambda function for AI-powered job matching using AWS Bedrock",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest",
+        "deploy": "zip -r ai-job-matcher.zip . && aws lambda update-function-code --function-name aicareeragentcoach-ai-job-matcher --zip-file fileb://ai-job-matcher.zip"
+    },
+    "dependencies": {
+        "aws-sdk": "^2.1691.0"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0"
+    },
+    "keywords": [
+        "aws",
+        "lambda",
+        "bedrock",
+        "ai",
+        "job-matching",
+        "career"
+    ],
+    "author": "AI Career Agent Coach",
+    "license": "MIT"
+}

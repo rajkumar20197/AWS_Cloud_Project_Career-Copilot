@@ -1,27 +1,68 @@
+# Netlify Configuration for AI Career Agent Coach
+
 [build]
-  publish = "build"
+  # Build command
   command = "npm run build"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF"
+  
+  # Publish directory (Vite builds to 'dist')
+  publish = "dist"
+  
+  # Environment variables for build
+  environment = { NODE_ENV = "production" }
 
 [build.environment]
-  NODE_VERSION = "18"
-  NPM_FLAGS = "--production=false"
+  # Build-time environment variables
+  VITE_API_URL = "https://api.aicareeragentcoach.com"
+  VITE_APP_URL = "https://aicareeragentcoach.com"
+  VITE_AGENCY_URL = "https://aicareeragentcoach.agency"
 
+# Redirect rules for SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-[build.processing]
-  skip_processing = false
+# Custom headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.aicareeragentcoach.com https://api.stripe.com; frame-src https://js.stripe.com;"
 
-[build.processing.css]
-  bundle = true
-  minify = true
+# Cache static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
-[build.processing.js]
-  bundle = true
-  minify = true
+# Domain configuration
+[[redirects]]
+  from = "https://www.aicareeragentcoach.com/*"
+  to = "https://aicareeragentcoach.com/:splat"
+  status = 301
+  force = true
 
-[build.processing.html]
-  pretty_urls = true
+[[redirects]]
+  from = "https://www.aicareeragentcoach.agency/*"
+  to = "https://aicareeragentcoach.agency/:splat"
+  status = 301
+  force = true
+
+# API proxy (if needed for development)
+[[redirects]]
+  from = "/api/*"
+  to = "https://api.aicareeragentcoach.com/api/:splat"
+  status = 200
+
+# Environment-specific builds
+[context.production]
+  environment = { NODE_ENV = "production" }
+
+[context.deploy-preview]
+  environment = { NODE_ENV = "staging" }
+
+[context.branch-deploy]
+  environment = { NODE_ENV = "development" }

@@ -16,6 +16,9 @@ import { OfferComparison } from './components/OfferComparison';
 import { MarketIntelligence } from './components/MarketIntelligence';
 import { GmailIntegration } from './components/GmailIntegration';
 import { SettingsPage } from './components/SettingsPage';
+import { TestComponents } from './pages/TestComponents';
+import TestPage from './TestPage';
+import ComponentTest from './components/ComponentTest';
 import MorningDashboard from './components/MorningDashboard';
 import SchedulingDashboard from './components/SchedulingDashboard';
 import AvailabilitySettings from './components/AvailabilitySettings';
@@ -138,6 +141,9 @@ export default function App() {
     { id: 'market-intelligence' as NavigationPage, label: 'Market Intel', icon: TrendingUp, badge: null },
     { id: 'gmail' as NavigationPage, label: 'Gmail & Calendar', icon: Mail, badge: notificationCount },
     { id: 'settings' as NavigationPage, label: 'Settings', icon: Settings, badge: null },
+    { id: 'test-components' as NavigationPage, label: '🧪 Test Components', icon: Sparkles, badge: 'NEW' },
+    { id: 'system-tests' as NavigationPage, label: '🔧 System Tests', icon: Settings, badge: 'TEST' },
+    { id: 'component-test' as NavigationPage, label: '🎨 UI Components', icon: Sparkles, badge: 'NEW' },
   ];
 
   const renderPage = () => {
@@ -322,6 +328,9 @@ export default function App() {
             {currentPage === 'market-intelligence' && <MarketIntelligence />}
             {currentPage === 'gmail' && <GmailIntegration />}
             {currentPage === 'settings' && <SettingsPage />}
+            {currentPage === 'test-components' && <TestComponents />}
+            {currentPage === 'system-tests' && <TestPage />}
+            {currentPage === 'component-test' && <ComponentTest />}
           </div>
         </main>
       </div>
@@ -361,7 +370,7 @@ function DashboardHome({ onNavigate }: { onNavigate: (page: NavigationPage) => v
         <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white">
           <p className="text-sm opacity-90">Resume Score</p>
           <p className="text-3xl mt-2">82</p>
-          <p className="text-sm mt-1 opacity-75">Good! Can improve</p>
+          <p className="text-sm mt-1 opacity-75">Good! Room for improvement</p>
         </div>
         <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white">
           <p className="text-sm opacity-90">Profile Views</p>
@@ -384,7 +393,7 @@ function DashboardHome({ onNavigate }: { onNavigate: (page: NavigationPage) => v
           </div>
           <h3 className="text-xl mb-2">Browse AI Job Matches</h3>
           <p className="text-slate-600 mb-4">
-            Discover 6 new jobs with 90+ compatibility scores based on your profile
+            Discover 6 new jobs with 90%+ compatibility scores based on your profile
           </p>
           <Button className="w-full">View Job Matches →</Button>
         </div>
@@ -401,7 +410,7 @@ function DashboardHome({ onNavigate }: { onNavigate: (page: NavigationPage) => v
           </div>
           <h3 className="text-xl mb-2">Optimize Your Resume</h3>
           <p className="text-slate-600 mb-4">
-            AI analysis suggests 5 improvements to boost your ATS score to 90+
+            AI analysis suggests 5 improvements to boost your ATS score to 90%+
           </p>
           <Button className="w-full">Optimize Now →</Button>
         </div>
@@ -435,7 +444,7 @@ function DashboardHome({ onNavigate }: { onNavigate: (page: NavigationPage) => v
           </div>
           <h3 className="text-xl mb-2">Morning Dashboard</h3>
           <p className="text-slate-600 mb-4">
-            "Wake up → Check Calendar → See Everything" - Your daily career briefing
+            "Wake up → Check Calendar → See Everything" — Your daily career briefing
           </p>
           <Button className="w-full">View Today's Schedule →</Button>
         </div>
