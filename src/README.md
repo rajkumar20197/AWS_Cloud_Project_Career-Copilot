@@ -1,6 +1,6 @@
 # 🚀 AI Career Agent Platform
 
-> **One-Click Setup: From Graduation to Dream Job - Automatically**  
+> **One-Click Setup: From Graduation to Dream Job**  
 > AWS Bedrock AI + Serverless Architecture for Autonomous Career Management
 
 [![AWS Bedrock](https://img.shields.io/badge/AWS-Bedrock%20AI-purple)](https://aws.amazon.com/bedrock/)
@@ -17,11 +17,13 @@
 ## 🎬 **Demo & Live Project**
 
 ### 📹 **Video Demo** (3-4 minutes)
-> 🎥 **[Watch Demo Video Here]** ← *Upload your video and add link here*  
+
+> 🎥 **[Watch Demo Video Here]** ← _Upload your video and add link here_  
 > Shows: Landing page with 3D animations → Onboarding → AI Job Matching → Application Tracker → Mock Interview
 
 ### 🌐 **Live Demo**
-> 🚀 **[Try Live App]** ← *Add your deployed AWS URL here*  
+
+> 🚀 **[Try Live App]** ← _Add your deployed AWS URL here_  
 > Experience the AI Career Agent in action!
 
 ### 📸 **Screenshots**
@@ -30,28 +32,39 @@
 <summary>Click to view screenshots</summary>
 
 #### 🏠 Landing Page with 3D "How It Works" Section
+
 ![Landing Page](./screenshots/landing-page.png)
-> *Professional hero section with animated countdown timer and floating 3D cards*
+
+> _Professional hero section with animated countdown timer and floating 3D cards_
 
 #### ⏰ Cinematic Countdown Timer
+
 ![Countdown Timer](./screenshots/countdown-timer.png)
-> *Eye-catching gradient countdown with particle effects*
+
+> _Eye-catching gradient countdown with particle effects_
 
 #### 📊 Interactive Dashboard
+
 ![Dashboard](./screenshots/dashboard.png)
-> *All 15 features accessible from one beautiful interface*
+
+> _All 15 features accessible from one beautiful interface_
 
 #### 💼 AI Job Swiper with Compatibility Scores
+
 ![Job Swiper](./screenshots/job-swiper.png)
-> *Tinder-style job matching with AWS Bedrock AI scoring*
+
+> _Tinder-style job matching with AWS Bedrock AI scoring_
 
 #### 📝 Application Tracker
+
 ![Application Tracker](./screenshots/application-tracker.png)
-> *Kanban board with drag-and-drop interview management*
+
+> _Kanban board with drag-and-drop interview management_
 
 </details>
 
 ### 🔗 **Links**
+
 - **GitHub Repository:** https://github.com/rajkumar20197/ai-career-agent-aws-bedrock
 - **Architecture Diagram:** See [ARCHITECTURE.md](./ARCHITECTURE.md)
 - **Quick Start Guide:** See [HACKATHON_QUICK_START.md](./HACKATHON_QUICK_START.md)
@@ -77,6 +90,7 @@
 ## 🚀 **Quick Start (One Command)**
 
 ### Prerequisites
+
 ```bash
 Node.js 18+
 AWS Account
@@ -84,6 +98,7 @@ AWS CLI configured
 ```
 
 ### Run Locally
+
 ```bash
 npm install
 npm run dev
@@ -92,6 +107,7 @@ npm run dev
 **That's it!** The app runs with mock data - no AWS deployment needed for testing.
 
 ### Deploy to AWS (Production)
+
 ```bash
 # Windows
 .\scripts\deploy.ps1
@@ -107,12 +123,14 @@ npm run dev
 ## ✨ **Features**
 
 ### 1. 🧠 **AI-Powered Job Matching**
+
 - AWS Bedrock (Claude 3.5 Haiku) analyzes your profile
 - 0-100 compatibility score for every job
 - Multi-platform integration: LinkedIn, Indeed, Glassdoor
 - Real-time job aggregation and filtering
 
 ### 2. 📄 **Resume Optimizer**
+
 - ATS compatibility scoring (0-100)
 - AI-powered resume analysis
 - Job-specific resume tailoring
@@ -120,6 +138,7 @@ npm run dev
 - Format and content scoring
 
 ### 3. 📊 **Market Intelligence**
+
 - Real-time salary benchmarking
 - Skill demand forecasting
 - Industry trend analysis
@@ -127,6 +146,7 @@ npm run dev
 - Location-based market data
 
 ### 4. 📧 **Gmail & Calendar Integration**
+
 - Automated interview invitation detection
 - Smart calendar scheduling based on availability
 - Email parsing with NLP
@@ -134,12 +154,14 @@ npm run dev
 - Conflict resolution
 
 ### 5. 🎓 **Career Onboarding**
+
 - Career stage assessment (student/graduate/professional)
 - Skills and interests mapping
 - Goal setting and tracking
 - Personalized roadmap generation
 
 ### 6. ⚙️ **Smart Settings & Notifications**
+
 - Preference management
 - Job alert customization
 - Email notification controls
@@ -152,6 +174,7 @@ npm run dev
 ### **Technology Stack**
 
 #### Frontend
+
 - **React 18** with TypeScript
 - **Tailwind CSS** for styling
 - **Shadcn/ui** component library
@@ -159,6 +182,7 @@ npm run dev
 - **Motion** for animations
 
 #### Backend (AWS Serverless)
+
 - **AWS Bedrock** - Claude 3.5 Haiku for AI reasoning
 - **AWS Lambda** - Python 3.11 serverless functions
 - **API Gateway** - RESTful API endpoints
@@ -229,14 +253,14 @@ User → React Frontend → API Gateway → Lambda → AWS Bedrock (AI)
 
 The logo represents the entire platform concept:
 
-| Element | Meaning |
-|---------|---------|
-| 🧠 **AI Brain** | AWS Bedrock intelligence (neural network) |
-| 📅 **Calendar Grid** | Automated interview scheduling |
-| 📈 **Upward Arrow** | Career growth (graduation → job) |
-| 🔄 **Circle** | Continuous 24/7 automation |
-| ✨ **Sparkles** | AI "magic" - set and forget |
-| 🎨 **Gradient** | Blue (AWS) → Purple (AI) → Pink (Success) |
+| Element              | Meaning                                   |
+| -------------------- | ----------------------------------------- |
+| 🧠 **AI Brain**      | AWS Bedrock intelligence (neural network) |
+| 📅 **Calendar Grid** | Automated interview scheduling            |
+| 📈 **Upward Arrow**  | Career growth (graduation → job)          |
+| 🔄 **Circle**        | Continuous 24/7 automation                |
+| ✨ **Sparkles**      | AI "magic" - set and forget               |
+| 🎨 **Gradient**      | Blue (AWS) → Purple (AI) → Pink (Success) |
 
 ### **Usage**
 
@@ -282,18 +306,21 @@ VITE_ENABLE_MOCK_DATA=true  # Use mock data for development
 ## 🧪 **Testing**
 
 ### **Frontend (Local)**
+
 ```bash
 npm run dev
 # App runs at http://localhost:5173
 ```
 
 ### **Backend (Unit Tests)**
+
 ```bash
 cd backend/lambda
 python -m pytest tests/
 ```
 
 ### **AWS Bedrock Integration Test**
+
 ```bash
 python tests/test_bedrock_integration.py
 ```
@@ -305,17 +332,20 @@ python tests/test_bedrock_integration.py
 ### **Option 1: One-Click Deployment (Recommended)**
 
 **Windows:**
+
 ```powershell
 .\scripts\deploy.ps1
 ```
 
 **Mac/Linux:**
+
 ```bash
 chmod +x scripts/deploy.sh
 ./scripts/deploy.sh
 ```
 
 This script:
+
 1. ✅ Validates AWS credentials
 2. ✅ Packages Lambda functions
 3. ✅ Uploads to S3
@@ -326,6 +356,7 @@ This script:
 ### **Option 2: Manual Deployment**
 
 #### Step 1: Deploy Backend
+
 ```bash
 cd infrastructure
 aws cloudformation create-stack \
@@ -335,12 +366,14 @@ aws cloudformation create-stack \
 ```
 
 #### Step 2: Build Frontend
+
 ```bash
 npm run build
 aws s3 sync dist/ s3://your-bucket-name
 ```
 
 #### Step 3: Update Environment
+
 ```bash
 # Get API Gateway URL from CloudFormation outputs
 aws cloudformation describe-stacks --stack-name ai-career-agent
@@ -381,6 +414,7 @@ npm run dev
 ### ✅ **Multi-Service AWS Architecture**
 
 Uses **10 AWS Services:**
+
 - AWS Bedrock (required)
 - Lambda
 - API Gateway
@@ -397,6 +431,7 @@ Uses **10 AWS Services:**
 ## 📊 **Demo & Submission**
 
 ### **Demo Video** (3 minutes)
+
 1. **00:00-00:30** - Problem: Manual job search is time-consuming for students
 2. **00:30-01:00** - Solution: Set graduation date → AI automates everything
 3. **01:00-02:00** - Features: Job matching, Gmail scanning, auto-scheduling, resume optimization
@@ -404,6 +439,7 @@ Uses **10 AWS Services:**
 5. **02:30-03:00** - Results: Student focuses on studies, AI handles career
 
 ### **Key Metrics**
+
 - ⚡ **Response Time:** <2s for AI job matching
 - 🎯 **Accuracy:** 92% interview detection rate
 - 🔄 **Automation:** 95% reduction in manual effort
@@ -414,6 +450,7 @@ Uses **10 AWS Services:**
 ## 📚 **Documentation**
 
 ### **Available Guides**
+
 - **ARCHITECTURE.md** - Detailed system architecture
 - **DEPLOYMENT_GUIDE.md** - Step-by-step deployment
 - **HACKATHON_COMPLIANCE.md** - AWS requirements verification
@@ -422,6 +459,7 @@ Uses **10 AWS Services:**
 - **PROJECT_SUMMARY.md** - Executive summary
 
 ### **Quick Reference**
+
 - **QUICK_REFERENCE.md** - Common commands and troubleshooting
 
 ---
@@ -439,14 +477,14 @@ Uses **10 AWS Services:**
 
 ### **vs. Typical Hackathon Submissions**
 
-| Feature | This Project | Typical Submission |
-|---------|--------------|-------------------|
-| **AWS Services** | 10 services | 1-2 services |
-| **Autonomy** | Full (24/7) | Partial (manual steps) |
-| **AI Integration** | Deep (Bedrock throughout) | Basic (one API call) |
-| **External APIs** | 5+ integrated | 0-1 integrated |
-| **Production Ready** | ✅ Full CI/CD | ❌ Demo only |
-| **Design Quality** | ✅ Professional | ❌ Basic |
+| Feature              | This Project              | Typical Submission     |
+| -------------------- | ------------------------- | ---------------------- |
+| **AWS Services**     | 10 services               | 1-2 services           |
+| **Autonomy**         | Full (24/7)               | Partial (manual steps) |
+| **AI Integration**   | Deep (Bedrock throughout) | Basic (one API call)   |
+| **External APIs**    | 5+ integrated             | 0-1 integrated         |
+| **Production Ready** | ✅ Full CI/CD             | ❌ Demo only           |
+| **Design Quality**   | ✅ Professional           | ❌ Basic               |
 
 ---
 
@@ -485,9 +523,58 @@ git push origin feature/amazing-feature
 
 ---
 
-## 📄 **License**
+## 📄 **License & Copyright**
 
-MIT License - see LICENSE file
+### **Copyright Notice**
+
+```
+Copyright (c) 2025 AI Career Agent Coach
+All rights reserved.
+```
+
+### **MIT License**
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for full details.
+
+**What this means for forks and contributions:**
+
+✅ **You CAN:**
+
+- Use this code for personal projects
+- Use this code for commercial projects
+- Modify and distribute the code
+- Fork and create derivative works
+
+❌ **You MUST:**
+
+- Include the original copyright notice
+- Include the MIT license text
+- Give credit to the original author
+
+❌ **You CANNOT:**
+
+- Remove copyright notices
+- Claim this work as your own
+- Use the "AI Career Agent Coach" name/brand without permission
+
+### **Attribution Requirements**
+
+If you fork or use this code, please include:
+
+```markdown
+Based on AI Career Agent Platform
+Copyright (c) 2025 AI Career Agent Coach
+Original: https://github.com/rajkumar20197/ai-career-agent-aws-bedrock
+License: MIT
+```
+
+### **Commercial Use**
+
+This project is available for commercial use under the MIT License. However:
+
+- The "AI Career Agent Coach" brand name is protected
+- You must create your own branding and identity
+- Attribution to the original work is required
 
 ---
 
@@ -531,7 +618,7 @@ npm run dev
 .\\scripts\\deploy.ps1  # Windows
 ```
 
-**From graduation to dream job - automatically! 🎓 → 💼 ✨**
+**From graduation to dream job! 🎓 → 💼 ✨**
 
 ---
 

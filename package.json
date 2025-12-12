@@ -86,6 +86,19 @@
     "react",
     "vite"
   ],
-  "author": "AI Career Agent Coach",
-  "license": "MIT"
+  "author": {
+    "name": "AI Career Agent Coach",
+    "email": "contact@aicareeragentcoach.com",
+    "url": "https://github.com/rajkumar20197/ai-career-agent-aws-bedrock"
+  },
+  "license": "MIT",
+  "copyright": "Copyright (c) 2025 AI Career Agent Coach. All rights reserved.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rajkumar20197/ai-career-agent-aws-bedrock.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rajkumar20197/ai-career-agent-aws-bedrock/issues"
+  },
+  "homepage": "https://github.com/rajkumar20197/ai-career-agent-aws-bedrock#readme"
 }

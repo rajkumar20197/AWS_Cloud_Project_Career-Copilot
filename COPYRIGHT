@@ -1,0 +1,103 @@
+AI Career Agent Platform
+Copyright Notice and License Information
+
+================================================================================
+
+COPYRIGHT NOTICE
+================================================================================
+
+Copyright (c) 2025 AI Career Agent Coach
+All rights reserved.
+
+This software and associated documentation files (the "Software") are the 
+intellectual property of AI Career Agent Coach.
+
+================================================================================
+
+LICENSE
+================================================================================
+
+This project is licensed under the MIT License.
+See the LICENSE file for the complete license text.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+================================================================================
+
+ATTRIBUTION REQUIREMENTS
+================================================================================
+
+If you use, modify, or distribute this software, you must:
+
+1. Include the original copyright notice
+2. Include the MIT license text
+3. Provide attribution to the original author
+4. Not remove or alter copyright notices
+
+Example attribution:
+"Based on AI Career Agent Platform by AI Career Agent Coach
+ https://github.com/rajkumar20197/ai-career-agent-aws-bedrock
+ Licensed under MIT License"
+
+================================================================================
+
+TRADEMARK NOTICE
+================================================================================
+
+"AI Career Agent Coach" and related branding are trademarks of AI Career Agent Coach.
+Use of these trademarks requires explicit permission.
+
+If you fork or create derivative works:
+- You may NOT use the "AI Career Agent Coach" name or branding
+- You must create your own unique branding and identity
+- You must still provide attribution to the original work
+
+================================================================================
+
+THIRD-PARTY LICENSES
+================================================================================
+
+This project includes third-party software components with their own licenses:
+
+- React: MIT License
+- AWS SDK: Apache License 2.0
+- Tailwind CSS: MIT License
+- TypeScript: Apache License 2.0
+- And others listed in package.json
+
+See individual package licenses for complete terms.
+
+================================================================================
+
+CONTACT INFORMATION
+================================================================================
+
+For licensing questions or permissions:
+- Email: contact@aicareeragentcoach.com
+- GitHub: https://github.com/rajkumar20197/ai-career-agent-aws-bedrock
+- Issues: https://github.com/rajkumar20197/ai-career-agent-aws-bedrock/issues
+
+================================================================================
+
+DISCLAIMER
+================================================================================
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+
+Last Updated: December 2025

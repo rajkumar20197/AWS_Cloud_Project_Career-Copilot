@@ -1,3 +1,14 @@
+/**
+ * AI Career Agent Platform - Enhanced Landing Page Component
+ * Copyright (c) 2025 AI Career Agent Coach
+ * 
+ * This file is part of the AI Career Agent Platform project.
+ * Licensed under the MIT License - see LICENSE file for details.
+ * 
+ * @author AI Career Agent Coach
+ * @created 2025
+ */
+
 import { useState } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Button } from './ui/button';
@@ -254,7 +265,7 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
                 Dream Job
               </span>
               <span className="block text-5xl md:text-6xl lg:text-7xl mt-4 text-slate-600">
-                Automatically ✨
+                ✨
               </span>
             </motion.h1>
 
@@ -506,19 +517,43 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
       </div>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 py-12">
+      <footer className="bg-slate-900 text-slate-400 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            <div className="flex flex-col gap-4">
               <Logo size="lg" variant="full" onClick={scrollToTop} />
+              <p className="text-slate-500 text-sm max-w-sm">
+                AI-powered career platform helping graduates land their dream jobs with automation and intelligence.
+              </p>
             </div>
-            <div className="flex gap-6 text-sm">
-              <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms</a>
-              <a href="#" className="hover:text-white transition-colors">Contact</a>
+            <div>
+              <h4 className="text-white mb-4">Legal</h4>
+              <div className="flex flex-col gap-2 text-sm">
+                <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+                <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+                <a href="#" className="hover:text-white transition-colors">License (MIT)</a>
+                <a href="#" className="hover:text-white transition-colors">Contact Us</a>
+              </div>
             </div>
-            <div className="text-sm">
-              © 2025 AI Career Agent. Powered by AWS Bedrock.
+            <div>
+              <h4 className="text-white mb-4">Technology</h4>
+              <div className="flex flex-col gap-2 text-sm">
+                <span>Powered by AWS Bedrock</span>
+                <span>Built with React & TypeScript</span>
+                <span>Serverless Architecture</span>
+                <span>Enterprise Security</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-slate-800 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="text-sm">
+                <strong className="text-white">© 2025 AI Career Agent Coach.</strong> All rights reserved.
+              </div>
+              <div className="text-sm">
+                Licensed under <span className="text-blue-400">MIT License</span> • Open Source
+              </div>
             </div>
           </div>
         </div>

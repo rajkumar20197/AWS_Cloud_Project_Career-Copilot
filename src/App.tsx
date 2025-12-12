@@ -1,3 +1,14 @@
+/**
+ * AI Career Agent Platform - Main Application Component
+ * Copyright (c) 2025 AI Career Agent Coach
+ * 
+ * This file is part of the AI Career Agent Platform project.
+ * Licensed under the MIT License - see LICENSE file for details.
+ * 
+ * @author AI Career Agent Coach
+ * @created 2025
+ */
+
 import { useState, useEffect } from 'react';
 import './config/cognito'; // Initialize AWS Cognito
 import { EnhancedLandingPage } from './components/EnhancedLandingPage';
@@ -295,7 +306,7 @@ export default function App() {
                 <div>
                   <h1 className="text-xl">AI Career Agent Platform</h1>
                   <p className="text-sm text-slate-600">
-                    Authenticated • Powered by AWS Bedrock Claude 3.5 Haiku
+                    Authenticated • Powered by AWS Bedrock Claude 3.5 Haiku • © 2025 AI Career Agent Coach
                   </p>
                 </div>
               </div>
