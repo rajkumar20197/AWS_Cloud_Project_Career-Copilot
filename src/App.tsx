@@ -29,7 +29,6 @@ import { GmailIntegration } from './components/GmailIntegration';
 import { SettingsPage } from './components/SettingsPage';
 import { TestComponents } from './pages/TestComponents';
 import TestPage from './TestPage';
-import ComponentTest from './components/ComponentTest';
 import MorningDashboard from './components/MorningDashboard';
 import SchedulingDashboard from './components/SchedulingDashboard';
 import AvailabilitySettings from './components/AvailabilitySettings';
@@ -161,7 +160,6 @@ export default function App() {
     { id: 'settings' as NavigationPage, label: 'Settings', icon: Settings, badge: null },
     { id: 'test-components' as NavigationPage, label: '🧪 Test Components', icon: Sparkles, badge: 'NEW' },
     { id: 'system-tests' as NavigationPage, label: '🔧 System Tests', icon: Settings, badge: 'TEST' },
-    { id: 'component-test' as NavigationPage, label: '🎨 UI Components', icon: Sparkles, badge: 'NEW' },
   ];
 
   const renderPage = () => {
@@ -372,7 +370,6 @@ export default function App() {
               {currentPage === 'settings' && <SettingsPage />}
               {currentPage === 'test-components' && <TestComponents />}
               {currentPage === 'system-tests' && <TestPage />}
-              {currentPage === 'component-test' && <ComponentTest />}
             </div>
           </main>
         </div>
