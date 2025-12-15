@@ -1,7 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Button } from '../components/ui/button';
 
-export default function PrivacyPolicy() {
+interface PrivacyPolicyProps {
+  onBack?: () => void;
+}
+
+export default function PrivacyPolicy({ onBack }: PrivacyPolicyProps) {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
@@ -20,7 +24,7 @@ export default function PrivacyPolicy() {
 
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Information We Collect</h2>
-            
+
             <h3 className="text-xl font-semibold text-gray-900 mb-3">2.1 Information You Provide</h3>
             <ul className="list-disc pl-6 text-gray-700 mb-4">
               <li>Account information (name, email, password)</li>
@@ -59,7 +63,7 @@ export default function PrivacyPolicy() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">4. How We Share Your Information</h2>
             <p className="text-gray-700 mb-4">We may share your information with:</p>
-            
+
             <h3 className="text-xl font-semibold text-gray-900 mb-3">4.1 Service Providers</h3>
             <ul className="list-disc pl-6 text-gray-700 mb-4">
               <li>AWS (hosting and infrastructure)</li>
@@ -214,14 +218,13 @@ export default function PrivacyPolicy() {
           </section>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-gray-200">
-          <Link
-            to="/"
-            className="text-blue-600 hover:text-blue-700 font-semibold"
-          >
-            ← Back to Home
-          </Link>
-        </div>
+        {onBack && (
+          <div className="mt-8 pt-8 border-t border-gray-200 text-center">
+            <Button variant="outline" onClick={onBack}>
+              ← Back to Home
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

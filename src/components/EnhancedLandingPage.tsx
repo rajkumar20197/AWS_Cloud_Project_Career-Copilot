@@ -37,11 +37,14 @@ import {
   Play,
 } from 'lucide-react';
 
+import type { NavigationPage } from '../types';
+
 interface EnhancedLandingPageProps {
   onGetStarted: () => void;
+  onNavigate?: (page: NavigationPage) => void;
 }
 
-export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) {
+export function EnhancedLandingPage({ onGetStarted, onNavigate }: EnhancedLandingPageProps) {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const { scrollYProgress } = useScroll();
@@ -161,7 +164,7 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            <Logo size="xl" animated={false} onClick={scrollToTop} />
+            <Logo size="md" animated={false} onClick={scrollToTop} />
             <div className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-slate-700 hover:text-blue-600 transition-colors">
                 Features
@@ -196,7 +199,7 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
             className="text-center"
           >
             <motion.div
-              animate={{ 
+              animate={{
                 scale: [1, 1.2, 1],
                 rotate: [0, 360]
               }}
@@ -250,7 +253,7 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
             >
               <Badge className="bg-blue-100 text-blue-700 border-blue-200 px-4 py-2 text-sm mb-6">
                 <Sparkles className="w-4 h-4 mr-2 inline" />
-                Powered by AWS Bedrock AI
+                AI-Powered Career Platform
               </Badge>
             </motion.div>
 
@@ -294,9 +297,9 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
                 <Rocket className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
 
-              <Button 
-                size="lg" 
-                variant="outline" 
+              <Button
+                size="lg"
+                variant="outline"
                 className="px-8 py-6 text-lg group"
                 onClick={() => setIsVideoOpen(true)}
               >
@@ -508,6 +511,7 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
                 size="lg"
                 variant="outline"
                 className="border-white text-white hover:bg-white/10 px-8 py-6 text-lg"
+                onClick={() => onNavigate?.('contact')}
               >
                 Schedule a Demo
               </Button>
@@ -521,7 +525,7 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div className="flex flex-col gap-4">
-              <Logo size="lg" variant="full" onClick={scrollToTop} />
+              <h3 className="text-2xl font-bold text-white">AI Career Agent Coach</h3>
               <p className="text-slate-500 text-sm max-w-sm">
                 AI-powered career platform helping graduates land their dream jobs with automation and intelligence.
               </p>
@@ -529,23 +533,23 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
             <div>
               <h4 className="text-white mb-4">Legal</h4>
               <div className="flex flex-col gap-2 text-sm">
-                <a href="/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Privacy Policy</a>
-                <a href="/terms.html" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Terms of Service</a>
+                <button onClick={() => onNavigate?.('privacy')} className="hover:text-white transition-colors text-left">Privacy Policy</button>
+                <button onClick={() => onNavigate?.('terms')} className="hover:text-white transition-colors text-left">Terms of Service</button>
                 <a href="/LICENSE" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">License (MIT)</a>
-                <a href="/contact.html" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact Us</a>
+                <button onClick={() => onNavigate?.('contact')} className="hover:text-white transition-colors text-left">Contact Us</button>
               </div>
             </div>
             <div>
               <h4 className="text-white mb-4">Technology</h4>
               <div className="flex flex-col gap-2 text-sm">
-                <span>Powered by AWS Bedrock</span>
+                <span>AI-Powered Intelligence</span>
                 <span>Built with React & TypeScript</span>
                 <span>Serverless Architecture</span>
                 <span>Enterprise Security</span>
               </div>
             </div>
           </div>
-          
+
           <div className="border-t border-slate-800 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="text-sm">
@@ -560,7 +564,7 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
       </footer>
 
       {/* Video Modal */}
-      <VideoModal 
+      <VideoModal
         isOpen={isVideoOpen}
         onClose={() => setIsVideoOpen(false)}
         videoUrl="https://youtu.be/1p2vUa1705g"

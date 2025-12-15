@@ -1,40 +1,59 @@
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Modern gradient background -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+    <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00a8cc;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1" />
+    <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
     </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
   </defs>
   
-  <!-- Background circle with gradient -->
-  <circle cx="16" cy="16" r="15" fill="url(#bg)" stroke="white" stroke-width="2"/>
+  <!-- Brain outline -->
+  <path d="M256 80 C200 80 160 120 160 176 C160 200 170 220 185 235 C170 250 160 270 160 295 C160 340 190 375 230 385 C235 420 260 445 290 445 C310 445 325 435 335 420 C345 435 360 445 380 445 C410 445 435 420 440 385 C480 375 510 340 510 295 C510 270 500 250 485 235 C500 220 510 200 510 176 C510 120 470 80 414 80 C390 80 370 90 355 105 C340 90 320 80 296 80 Z" 
+        fill="url(#brainGradient)" 
+        stroke="#4a5568" 
+        stroke-width="8"
+        filter="url(#shadow)"/>
   
-  <!-- AI Brain/Head silhouette -->
-  <path d="M10 12c0-3.3 2.7-6 6-6s6 2.7 6 6c0 1.1-.3 2.1-.8 3l.5.5c.2.2.2.5 0 .7-.2.2-.5.2-.7 0l-.5-.5c-.9.5-1.9.8-3 .8s-2.1-.3-3-.8l-.5.5c-.2.2-.5.2-.7 0-.2-.2-.2-.5 0-.7l.5-.5c-.5-.9-.8-1.9-.8-3z" fill="white"/>
+  <!-- Circuit pattern left side -->
+  <circle cx="200" cy="150" r="8" fill="#00ffff"/>
+  <circle cx="180" cy="180" r="6" fill="#00d4ff"/>
+  <circle cx="190" cy="210" r="8" fill="#00ffff"/>
+  <circle cx="210" cy="240" r="6" fill="#00d4ff"/>
+  <line x1="200" y1="150" x2="180" y2="180" stroke="#00ffff" stroke-width="3"/>
+  <line x1="180" y1="180" x2="190" y2="210" stroke="#00d4ff" stroke-width="3"/>
+  <line x1="190" y1="210" x2="210" y2="240" stroke="#00ffff" stroke-width="3"/>
   
-  <!-- Neural network pattern -->
-  <circle cx="13" cy="11" r="1" fill="url(#accent)"/>
-  <circle cx="19" cy="11" r="1" fill="url(#accent)"/>
-  <circle cx="16" cy="14" r="1" fill="url(#accent)"/>
-  <circle cx="13" cy="17" r="1" fill="url(#accent)"/>
-  <circle cx="19" cy="17" r="1" fill="url(#accent)"/>
+  <!-- Circuit pattern right side -->
+  <circle cx="312" cy="150" r="8" fill="#00ffff"/>
+  <circle cx="332" cy="180" r="6" fill="#00d4ff"/>
+  <circle cx="322" cy="210" r="8" fill="#00ffff"/>
+  <circle cx="302" cy="240" r="6" fill="#00d4ff"/>
+  <line x1="312" y1="150" x2="332" y2="180" stroke="#00ffff" stroke-width="3"/>
+  <line x1="332" y1="180" x2="322" y2="210" stroke="#00d4ff" stroke-width="3"/>
+  <line x1="322" y1="210" x2="302" y2="240" stroke="#00ffff" stroke-width="3"/>
   
-  <!-- Connection lines -->
-  <line x1="13" y1="11" x2="16" y2="14" stroke="url(#accent)" stroke-width="0.8" opacity="0.8"/>
-  <line x1="19" y1="11" x2="16" y2="14" stroke="url(#accent)" stroke-width="0.8" opacity="0.8"/>
-  <line x1="16" y1="14" x2="13" y2="17" stroke="url(#accent)" stroke-width="0.8" opacity="0.8"/>
-  <line x1="16" y1="14" x2="19" y2="17" stroke="url(#accent)" stroke-width="0.8" opacity="0.8"/>
+  <!-- Center dividing line -->
+  <line x1="256" y1="100" x2="256" y2="400" stroke="#4a5568" stroke-width="4"/>
   
-  <!-- Career growth arrow -->
-  <path d="M22 22l-1.5-1.5 1.5-1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M20.5 20.5h-4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Growth chart bars -->
+  <rect x="280" y="280" width="20" height="40" fill="#cbd5e1" rx="3"/>
+  <rect x="305" y="260" width="20" height="60" fill="#cbd5e1" rx="3"/>
+  <rect x="330" y="240" width="20" height="80" fill="#cbd5e1" rx="3"/>
   
-  <!-- Success indicator -->
-  <circle cx="25" cy="7" r="3" fill="#10b981"/>
-  <path d="M23.5 7l1 1 2-2" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Upward arrow -->
+  <path d="M 380 350 Q 420 280 450 200 L 470 220 L 450 200 L 430 180" 
+        fill="none" 
+        stroke="url(#arrowGradient)" 
+        stroke-width="16" 
+        stroke-linecap="round"
+        filter="url(#shadow)"/>
+  <path d="M 450 200 L 430 180 L 450 160 Z" 
+        fill="url(#arrowGradient)"
+        filter="url(#shadow)"/>
 </svg>

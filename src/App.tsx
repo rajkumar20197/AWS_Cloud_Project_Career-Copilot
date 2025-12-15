@@ -34,6 +34,13 @@ import MorningDashboard from './components/MorningDashboard';
 import SchedulingDashboard from './components/SchedulingDashboard';
 import AvailabilitySettings from './components/AvailabilitySettings';
 import ApplicationTrackingDashboard from './components/ApplicationTrackingDashboard';
+// Legal & Support Pages
+import { Contact } from './pages/Contact';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import FAQ from './pages/FAQ';
+import HelpCenter from './pages/HelpCenter';
+import SupportPage from './components/SupportPage';
 import { Logo } from './components/Logo';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
@@ -78,7 +85,7 @@ export default function App() {
       try {
         const { getCurrentUser } = await import('aws-amplify/auth');
         const user = await getCurrentUser();
-        
+
         if (user) {
           // User is already signed in
           const userData = {
@@ -86,7 +93,7 @@ export default function App() {
             email: user.signInDetails?.loginId || '',
             userId: user.userId,
           };
-          
+
           setUserData(userData);
           setIsLoggedIn(true);
           setIsOnboarded(true);
@@ -97,7 +104,7 @@ export default function App() {
         console.log('No existing session - showing landing page');
       }
     };
-    
+
     checkExistingSession();
   }, []);
 
@@ -159,7 +166,7 @@ export default function App() {
 
   const renderPage = () => {
     if (currentPage === 'landing') {
-      return <EnhancedLandingPage onGetStarted={handleGetStarted} />;
+      return <EnhancedLandingPage onGetStarted={handleGetStarted} onNavigate={setCurrentPage} />;
     }
 
     if (currentPage === 'login') {
@@ -174,177 +181,201 @@ export default function App() {
       );
     }
 
+    // Public pages (no auth required)
+    if (currentPage === 'contact') {
+      return <Contact onBack={handleBackToLanding} />;
+    }
+
+    if (currentPage === 'privacy') {
+      return <PrivacyPolicy onBack={handleBackToLanding} />;
+    }
+
+    if (currentPage === 'terms') {
+      return <TermsOfService onBack={handleBackToLanding} />;
+    }
+
+    if (currentPage === 'faq') {
+      return <FAQ onBack={handleBackToLanding} />;
+    }
+
+    if (currentPage === 'help') {
+      return <HelpCenter onBack={handleBackToLanding} />;
+    }
+
+    if (currentPage === 'support') {
+      return <SupportPage />;
+    }
+
     // Dashboard pages with sidebar - protected by authentication
     return (
       <AuthGuard onAuthRequired={() => setCurrentPage('login')}>
-      <div className="flex min-h-screen bg-slate-50">
-        {/* Sidebar */}
-        <aside
-          className={`fixed lg:sticky top-0 h-screen bg-white border-r border-slate-200 transition-all duration-300 z-40 ${
-            isSidebarOpen ? 'w-64' : 'w-0 lg:w-20'
-          }`}
-        >
-          <div className="flex flex-col h-full">
-            {/* Logo */}
-            <div className="p-6 flex items-center justify-between">
-              {isSidebarOpen ? (
-                <Logo size="sm" variant="full" onClick={handleLogoClick} />
-              ) : (
-                <Logo size="sm" variant="icon" onClick={handleLogoClick} />
-              )}
-              <button
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="p-2 hover:bg-slate-100 rounded-lg lg:hidden"
-              >
-                {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-            </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 px-3 space-y-1">
-              {navigationItems.map(item => {
-                const Icon = item.icon;
-                const isActive = currentPage === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setCurrentPage(item.id);
-                      if (window.innerWidth < 1024) setIsSidebarOpen(false);
-                    }}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                      isActive
-                        ? 'bg-blue-50 text-blue-600'
-                        : 'text-slate-700 hover:bg-slate-50'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5 flex-shrink-0" />
-                    {isSidebarOpen && (
-                      <>
-                        <span className="flex-1 text-left text-sm">{item.label}</span>
-                        {item.badge && (
-                          <Badge
-                            className={`text-xs ${
-                              isActive ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'
-                            }`}
-                          >
-                            {item.badge}
-                          </Badge>
-                        )}
-                      </>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
-
-            <Separator />
-
-            {/* User Profile */}
-            <div className="p-3">
-              <div className={`flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 cursor-pointer ${
-                isSidebarOpen ? '' : 'justify-center'
-              }`}>
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <User className="w-5 h-5 text-white" />
-                </div>
-                {isSidebarOpen && (
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm truncate">{userData?.name || 'User'}</p>
-                    <p className="text-xs text-slate-500">{userData?.email || 'Graduate'}</p>
-                  </div>
+        <div className="flex min-h-screen bg-slate-50">
+          {/* Sidebar */}
+          <aside
+            className={`fixed lg:sticky top-0 h-screen bg-white border-r border-slate-200 transition-all duration-300 z-40 ${isSidebarOpen ? 'w-64' : 'w-0 lg:w-20'
+              }`}
+          >
+            <div className="flex flex-col h-full">
+              {/* Logo */}
+              <div className="p-6 flex items-center justify-between">
+                {isSidebarOpen ? (
+                  <Logo size="sm" variant="full" onClick={handleLogoClick} />
+                ) : (
+                  <Logo size="sm" variant="icon" onClick={handleLogoClick} />
                 )}
-              </div>
-              {isSidebarOpen && (
-                <Button 
-                  variant="outline" 
-                  className="w-full mt-2" 
-                  size="sm"
-                  onClick={async () => {
-                    try {
-                      const { signOut } = await import('aws-amplify/auth');
-                      await signOut();
-                      setIsLoggedIn(false);
-                      setIsOnboarded(false);
-                      setUserData(null);
-                      setCurrentPage('landing');
-                      toast.success('Logged out successfully');
-                    } catch (error) {
-                      console.error('Logout error:', error);
-                      toast.error('Logout failed');
-                    }
-                  }}
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
-                </Button>
-              )}
-            </div>
-          </div>
-        </aside>
-
-        {/* Mobile Overlay */}
-        {isSidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        )}
-
-        {/* Main Content */}
-        <main className="flex-1">
-          {/* Header */}
-          <header className="sticky top-0 z-20 bg-white border-b border-slate-200 px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
                 <button
                   onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                   className="p-2 hover:bg-slate-100 rounded-lg lg:hidden"
                 >
-                  <Menu className="w-5 h-5" />
+                  {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                 </button>
-                <div>
-                  <h1 className="text-xl">AI Career Agent Platform</h1>
-                  <p className="text-sm text-slate-600">
-                    Authenticated • Powered by AWS Bedrock Claude 3.5 Haiku • © 2025 AI Career Agent Coach
-                  </p>
-                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <button className="relative p-2 hover:bg-slate-100 rounded-lg">
-                  <Bell className="w-5 h-5" />
-                  {notificationCount > 0 && (
-                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+
+              {/* Navigation */}
+              <nav className="flex-1 px-3 space-y-1">
+                {navigationItems.map(item => {
+                  const Icon = item.icon;
+                  const isActive = currentPage === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setCurrentPage(item.id);
+                        if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive
+                        ? 'bg-blue-50 text-blue-600'
+                        : 'text-slate-700 hover:bg-slate-50'
+                        }`}
+                    >
+                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      {isSidebarOpen && (
+                        <>
+                          <span className="flex-1 text-left text-sm">{item.label}</span>
+                          {item.badge && (
+                            <Badge
+                              className={`text-xs ${isActive ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-700'
+                                }`}
+                            >
+                              {item.badge}
+                            </Badge>
+                          )}
+                        </>
+                      )}
+                    </button>
+                  );
+                })}
+              </nav>
+
+              <Separator />
+
+              {/* User Profile */}
+              <div className="p-3">
+                <div className={`flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 cursor-pointer ${isSidebarOpen ? '' : 'justify-center'
+                  }`}>
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                  {isSidebarOpen && (
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm truncate">{userData?.name || 'User'}</p>
+                      <p className="text-xs text-slate-500">{userData?.email || 'Graduate'}</p>
+                    </div>
                   )}
-                </button>
+                </div>
+                {isSidebarOpen && (
+                  <Button
+                    variant="outline"
+                    className="w-full mt-2"
+                    size="sm"
+                    onClick={async () => {
+                      try {
+                        const { signOut } = await import('aws-amplify/auth');
+                        await signOut();
+                        setIsLoggedIn(false);
+                        setIsOnboarded(false);
+                        setUserData(null);
+                        setCurrentPage('landing');
+                        toast.success('Logged out successfully');
+                      } catch (error) {
+                        console.error('Logout error:', error);
+                        toast.error('Logout failed');
+                      }
+                    }}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </Button>
+                )}
               </div>
             </div>
-          </header>
+          </aside>
 
-          {/* Page Content */}
-          <div className="p-6">
-            {currentPage === 'dashboard' && <InteractiveDashboard onNavigate={setCurrentPage} />}
-            {currentPage === 'morning-dashboard' && <MorningDashboard />}
-            {currentPage === 'scheduling-dashboard' && <SchedulingDashboard />}
-            {currentPage === 'availability-settings' && <AvailabilitySettings />}
-            {currentPage === 'application-tracking' && <ApplicationTrackingDashboard />}
-            {currentPage === 'job-search' && <JobSearchDashboard />}
-            {currentPage === 'job-swiper' && <JobSwiper />}
-            {currentPage === 'application-tracker' && <ApplicationTracker />}
-            {currentPage === 'resume' && <ResumeOptimizer />}
-            {currentPage === 'cover-letter' && <CoverLetterGenerator />}
-            {currentPage === 'mock-interview' && <AIMockInterview />}
-            {currentPage === 'skill-gap' && <SkillGapAnalyzer />}
-            {currentPage === 'offer-comparison' && <OfferComparison />}
-            {currentPage === 'market-intelligence' && <MarketIntelligence />}
-            {currentPage === 'gmail' && <GmailIntegration />}
-            {currentPage === 'settings' && <SettingsPage />}
-            {currentPage === 'test-components' && <TestComponents />}
-            {currentPage === 'system-tests' && <TestPage />}
-            {currentPage === 'component-test' && <ComponentTest />}
-          </div>
-        </main>
-      </div>
+          {/* Mobile Overlay */}
+          {isSidebarOpen && (
+            <div
+              className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+
+          {/* Main Content */}
+          <main className="flex-1">
+            {/* Header */}
+            <header className="sticky top-0 z-20 bg-white border-b border-slate-200 px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                    className="p-2 hover:bg-slate-100 rounded-lg lg:hidden"
+                  >
+                    <Menu className="w-5 h-5" />
+                  </button>
+                  <div>
+                    <h1 className="text-xl">AI Career Agent Platform</h1>
+                    <p className="text-sm text-slate-600">
+                      Authenticated • © 2025 AI Career Agent Coach
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => toast.info('No new notifications')}
+                    className="relative p-2 hover:bg-slate-100 rounded-lg"
+                  >
+                    <Bell className="w-5 h-5" />
+                    {notificationCount > 0 && (
+                      <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+                    )}
+                  </button>
+                </div>
+              </div>
+            </header>
+
+            {/* Page Content */}
+            <div className="p-6">
+              {currentPage === 'dashboard' && <InteractiveDashboard onNavigate={setCurrentPage} />}
+              {currentPage === 'morning-dashboard' && <MorningDashboard />}
+              {currentPage === 'scheduling-dashboard' && <SchedulingDashboard />}
+              {currentPage === 'availability-settings' && <AvailabilitySettings />}
+              {currentPage === 'application-tracking' && <ApplicationTrackingDashboard />}
+              {currentPage === 'job-search' && <JobSearchDashboard />}
+              {currentPage === 'job-swiper' && <JobSwiper />}
+              {currentPage === 'application-tracker' && <ApplicationTracker />}
+              {currentPage === 'resume' && <ResumeOptimizer />}
+              {currentPage === 'cover-letter' && <CoverLetterGenerator />}
+              {currentPage === 'mock-interview' && <AIMockInterview />}
+              {currentPage === 'skill-gap' && <SkillGapAnalyzer />}
+              {currentPage === 'offer-comparison' && <OfferComparison />}
+              {currentPage === 'market-intelligence' && <MarketIntelligence />}
+              {currentPage === 'gmail' && <GmailIntegration />}
+              {currentPage === 'settings' && <SettingsPage />}
+              {currentPage === 'test-components' && <TestComponents />}
+              {currentPage === 'system-tests' && <TestPage />}
+              {currentPage === 'component-test' && <ComponentTest />}
+            </div>
+          </main>
+        </div>
       </AuthGuard>
     );
   };

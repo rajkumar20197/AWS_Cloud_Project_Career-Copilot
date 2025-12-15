@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error - AI Career Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: #ef4444;
+            top: -200px;
+            left: -200px;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: #f97316;
+            bottom: -250px;
+            right: -250px;
+            animation-delay: 2s;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.5;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .error-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 60px rgba(239, 68, 68, 0.4);
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .error-icon::before {
+            content: '⚠️';
+            font-size: 60px;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        .error-code {
+            font-size: 6rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fca5a5 0%, #fdba74 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #f1f5f9;
+        }
+
+        .message {
+            font-size: 1.125rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .error-details {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .help-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .help-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .help-list {
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .help-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .help-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .footer a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #93c5fd;
+        }
+
+        @media (max-width: 640px) {
+            .error-code {
+                font-size: 4rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .message {
+                font-size: 1rem;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="container">
+        <div class="error-icon"></div>
+
+        <div class="error-code" id="errorCode">500</div>
+        <h1 id="errorTitle">Oops! Something Went Wrong</h1>
+
+        <div class="message">
+            <p><strong>We're experiencing technical difficulties.</strong></p>
+            <p style="margin-top: 1rem;">Our team has been notified and is working to fix the issue. Please try again in
+                a few minutes.</p>
+        </div>
+
+        <div class="error-details" id="errorDetails" style="display: none;">
+            Error ID: <span id="errorId"></span><br>
+            Timestamp: <span id="timestamp"></span>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="location.reload()">
+                🔄 Try Again
+            </button>
+            <a href="/" class="btn btn-secondary">
+                🏠 Go Home
+            </a>
+            <a href="mailto:support@careercopilot.com" class="btn btn-secondary">
+                📧 Contact Support
+            </a>
+        </div>
+
+        <div class="help-section">
+            <div class="help-title">What you can do:</div>
+            <ul class="help-list">
+                <li>Refresh the page or try again in a few minutes</li>
+                <li>Clear your browser cache and cookies</li>
+                <li>Check your internet connection</li>
+                <li>Try accessing from a different browser</li>
+                <li>Contact our support team if the issue persists</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>Error Reference: <span id="errorRef"></span></p>
+            <p style="margin-top: 0.5rem;">© 2025 AI Career Agent Coach • Powered by AWS</p>
+        </div>
+    </div>
+
+    <script>
+        // Generate error reference ID
+        const errorRef = 'ERR-' + Date.now().toString(36).toUpperCase();
+        document.getElementById('errorRef').textContent = errorRef;
+
+        // Get error code from URL parameter or use default
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorCode = urlParams.get('code') || '500';
+        const errorMessage = urlParams.get('message') || '';
+
+        // Update error code
+        document.getElementById('errorCode').textContent = errorCode;
+
+        // Update title based on error code
+        const errorTitles = {
+            '500': 'Internal Server Error',
+            '502': 'Bad Gateway',
+            '503': 'Service Unavailable',
+            '504': 'Gateway Timeout',
+            '404': 'Page Not Found',
+            '403': 'Access Forbidden',
+            '401': 'Unauthorized Access'
+        };
+
+        if (errorTitles[errorCode]) {
+            document.getElementById('errorTitle').textContent = errorTitles[errorCode];
+        }
+
+        // Show error details if available
+        if (errorMessage) {
+            const errorDetails = document.getElementById('errorDetails');
+            const errorId = document.getElementById('errorId');
+            const timestamp = document.getElementById('timestamp');
+
+            errorDetails.style.display = 'block';
+            errorId.textContent = errorRef;
+            timestamp.textContent = new Date().toLocaleString();
+        }
+
+        // Auto-retry for 503 errors (service unavailable)
+        if (errorCode === '503') {
+            let countdown = 30;
+            const retryMessage = document.createElement('div');
+            retryMessage.style.cssText = 'margin-top: 1rem; color: #94a3b8; font-size: 0.875rem;';
+            retryMessage.innerHTML = `Auto-retry in <strong style="color: #60a5fa;">${countdown}</strong> seconds...`;
+            document.querySelector('.message').appendChild(retryMessage);
+
+            const timer = setInterval(() => {
+                countdown--;
+                retryMessage.innerHTML = `Auto-retry in <strong style="color: #60a5fa;">${countdown}</strong> seconds...`;
+
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    location.reload();
+                }
+            }, 1000);
+        }
+
+        // Log error for debugging (in production, send to monitoring service)
+        console.error('Error Page Loaded:', {
+            code: errorCode,
+            message: errorMessage,
+            reference: errorRef,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            url: window.location.href
+        });
+    </script>
+</body>
+
+</html>

@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator 
+  DropdownMenuSeparator
 } from './ui/dropdown-menu';
-import { 
-  Menu, 
-  X, 
-  ChevronDown, 
-  Home, 
-  Building2, 
-  Shield, 
+import {
+  Menu,
+  X,
+  ChevronDown,
+  Home,
+  Building2,
+  Shield,
   ExternalLink,
   User,
   Settings,
@@ -62,8 +62,8 @@ export const UniversalHeader: React.FC<UniversalHeaderProps> = ({ user, onLogout
         {/* Logo and Domain Badge */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <img 
-              src={currentConfig.theme.logo} 
+            <img
+              src={currentConfig.theme.logo}
               alt={currentConfig.name}
               className="h-8 w-8"
               onError={(e) => {
@@ -71,11 +71,11 @@ export const UniversalHeader: React.FC<UniversalHeaderProps> = ({ user, onLogout
               }}
             />
             <span className="font-bold text-lg hidden sm:inline-block">
-              AI Career Coach
+              AI Career Agent Coach
             </span>
           </div>
-          
-          <Badge 
+
+          <Badge
             variant={getDomainBadgeVariant(currentConfig.type)}
             className="flex items-center gap-1"
           >
@@ -111,7 +111,7 @@ export const UniversalHeader: React.FC<UniversalHeaderProps> = ({ user, onLogout
               <DropdownMenuContent align="end" className="w-56">
                 {crossDomainLinks.map((link) => (
                   <DropdownMenuItem key={link.url} asChild>
-                    <a 
+                    <a
                       href={link.url}
                       className="flex items-center gap-2"
                       target="_blank"
@@ -137,8 +137,8 @@ export const UniversalHeader: React.FC<UniversalHeaderProps> = ({ user, onLogout
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2">
                   {user.avatar ? (
-                    <img 
-                      src={user.avatar} 
+                    <img
+                      src={user.avatar}
                       alt={user.name}
                       className="h-6 w-6 rounded-full"
                     />
@@ -212,7 +212,7 @@ export const UniversalHeader: React.FC<UniversalHeaderProps> = ({ user, onLogout
                 {item.label}
               </a>
             ))}
-            
+
             {crossDomainLinks.length > 0 && (
               <>
                 <div className="border-t pt-2 mt-2">

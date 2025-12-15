@@ -89,7 +89,7 @@ const UserRegistration: React.FC = () => {
 
   const handleNext = () => {
     let validationError = null;
-    
+
     if (step === 1) validationError = validateStep1();
     if (step === 2) validationError = validateStep2();
     if (step === 3) validationError = validateStep3();
@@ -160,8 +160,8 @@ const UserRegistration: React.FC = () => {
               We've sent a welcome email to <strong>{formData.email}</strong> with your login details and getting started guide.
             </AlertDescription>
           </Alert>
-          <Button 
-            className="w-full" 
+          <Button
+            className="w-full"
             onClick={() => window.location.href = '/login'}
           >
             Continue to Login
@@ -174,7 +174,7 @@ const UserRegistration: React.FC = () => {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl text-center">Join AI Career Coach</CardTitle>
+        <CardTitle className="text-2xl text-center">Join AI Career Agent Coach</CardTitle>
         <CardDescription className="text-center">
           Step {step} of 3: {step === 1 ? 'Basic Information' : step === 2 ? 'Security' : 'Career Profile'}
         </CardDescription>
@@ -182,9 +182,8 @@ const UserRegistration: React.FC = () => {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className={`flex-1 h-2 rounded-full ${
-                i <= step ? 'bg-blue-600' : 'bg-gray-200'
-              }`}
+              className={`flex-1 h-2 rounded-full ${i <= step ? 'bg-blue-600' : 'bg-gray-200'
+                }`}
             />
           ))}
         </div>
@@ -285,7 +284,7 @@ const UserRegistration: React.FC = () => {
                 placeholder="Software Engineer, Marketing Manager, etc."
               />
             </div>
-            
+
             <div>
               <Label>Experience Level</Label>
               <div className="grid grid-cols-1 gap-2 mt-2">

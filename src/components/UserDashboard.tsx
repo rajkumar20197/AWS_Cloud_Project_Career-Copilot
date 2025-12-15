@@ -4,13 +4,13 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
 import { Alert, AlertDescription } from './ui/alert';
-import { 
-  User, 
-  FileText, 
-  Calendar, 
-  Target, 
-  TrendingUp, 
-  Mail, 
+import {
+  User,
+  FileText,
+  Calendar,
+  Target,
+  TrendingUp,
+  Mail,
   Settings,
   Upload,
   CheckCircle,
@@ -86,7 +86,7 @@ const UserDashboard: React.FC = () => {
 
   const getCompletionTasks = () => {
     if (!user) return [];
-    
+
     return [
       {
         id: 'resume',
@@ -128,7 +128,7 @@ const UserDashboard: React.FC = () => {
       id: 1,
       type: 'account',
       title: 'Account Created',
-      description: 'Welcome to AI Career Coach!',
+      description: 'Welcome to AI Career Agent Coach!',
       timestamp: new Date().toISOString(),
       icon: CheckCircle,
       color: 'text-green-600'
@@ -235,7 +235,7 @@ const UserDashboard: React.FC = () => {
           <Alert>
             <Star className="h-4 w-4" />
             <AlertDescription>
-              🎉 Welcome to AI Career Coach! Complete your profile setup below to unlock all features and get personalized career guidance.
+              🎉 Welcome to AI Career Agent Coach! Complete your profile setup below to unlock all features and get personalized career guidance.
             </AlertDescription>
           </Alert>
         )}
@@ -300,9 +300,8 @@ const UserDashboard: React.FC = () => {
               {completionTasks.map((task) => (
                 <div key={task.id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex items-center space-x-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                      task.completed ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'
-                    }`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${task.completed ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'
+                      }`}>
                       {task.completed ? <CheckCircle className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                     </div>
                     <div>

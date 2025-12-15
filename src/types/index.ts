@@ -167,7 +167,7 @@ export interface AgentStats {
   averageResponseTime: string;
 }
 
-export type NavigationPage = 
+export type NavigationPage =
   | 'landing'
   | 'login'
   | 'onboarding'
@@ -189,4 +189,11 @@ export type NavigationPage =
   | 'settings'
   | 'test-components'
   | 'system-tests'
-  | 'component-test';
+  | 'component-test'
+  // Legal & Support Pages
+  | 'privacy'
+  | 'terms'
+  | 'contact'
+  | 'help'
+  | 'faq'
+  | 'support';

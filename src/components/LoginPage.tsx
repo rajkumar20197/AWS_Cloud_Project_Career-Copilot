@@ -43,7 +43,7 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
+
     try {
       if (isLogin) {
         // Sign in
@@ -199,7 +199,7 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
             transition={{ duration: 0.6 }}
           >
             <Logo size="lg" variant="full" className="mb-8" onClick={onBackToLanding} />
-            
+
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -215,7 +215,7 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
                 </span>
               </h1>
               <p className="text-xl text-slate-300 max-w-md">
-                AI-powered career agent that works 24/7 using AWS Bedrock. 
+                AI-powered career agent that works 24/7 using AWS Bedrock.
                 Set your date, let AI handle everything.
               </p>
             </motion.div>
@@ -301,21 +301,19 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
               <div className="flex gap-2 mb-8 bg-white/5 rounded-2xl p-1.5">
                 <button
                   onClick={() => setIsLogin(true)}
-                  className={`flex-1 py-3 px-4 rounded-xl transition-all font-medium ${
-                    isLogin
+                  className={`flex-1 py-3 px-4 rounded-xl transition-all font-medium ${isLogin
                       ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
                       : 'text-slate-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="relative z-10">Login</span>
                 </button>
                 <button
                   onClick={() => setIsLogin(false)}
-                  className={`flex-1 py-3 px-4 rounded-xl transition-all font-medium ${
-                    !isLogin
+                  className={`flex-1 py-3 px-4 rounded-xl transition-all font-medium ${!isLogin
                       ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
                       : 'text-slate-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <span className="relative z-10">Sign Up</span>
                 </button>
@@ -484,85 +482,85 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
                       )}
                     </div>
 
-                  {!isLogin && (
-                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                      <label className="flex items-start gap-3 text-sm text-slate-300 cursor-pointer group">
-                        <input
-                          type="checkbox"
-                          checked={acceptedTerms}
-                          onChange={(e) => setAcceptedTerms(e.target.checked)}
-                          required
-                          className="mt-0.5 rounded border-white/20 bg-white/5 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
-                        />
-                        <span className="group-hover:text-white transition-colors">
-                          I agree to the{' '}
-                          <a
-                            href="/terms"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-400 hover:text-blue-300 underline"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            Terms and Conditions
-                          </a>
-                          {' '}and{' '}
-                          <a
-                            href="/privacy"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-400 hover:text-blue-300 underline"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            Privacy Policy
-                          </a>
-                        </span>
-                      </label>
-                    </div>
-                  )}
+                    {!isLogin && (
+                      <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                        <label className="flex items-start gap-3 text-sm text-slate-300 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={acceptedTerms}
+                            onChange={(e) => setAcceptedTerms(e.target.checked)}
+                            required
+                            className="mt-0.5 rounded border-white/20 bg-white/5 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 cursor-pointer"
+                          />
+                          <span className="group-hover:text-white transition-colors">
+                            I agree to the{' '}
+                            <a
+                              href="/terms"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-400 hover:text-blue-300 underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Terms and Conditions
+                            </a>
+                            {' '}and{' '}
+                            <a
+                              href="/privacy"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-400 hover:text-blue-300 underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Privacy Policy
+                            </a>
+                          </span>
+                        </label>
+                      </div>
+                    )}
 
-                  {isLogin && (
-                    <div className="flex items-center justify-between text-sm">
-                      <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
-                        <input type="checkbox" className="rounded border-white/20" />
-                        Remember me
-                      </label>
-                      <a href="#" className="text-blue-400 hover:text-blue-300">
-                        Forgot password?
-                      </a>
-                    </div>
-                  )}
+                    {isLogin && (
+                      <div className="flex items-center justify-between text-sm">
+                        <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
+                          <input type="checkbox" className="rounded border-white/20" />
+                          Remember me
+                        </label>
+                        <a href="#" className="text-blue-400 hover:text-blue-300">
+                          Forgot password?
+                        </a>
+                      </div>
+                    )}
 
-                  <Button
-                    type="submit"
-                    disabled={isLoading || (!isLogin && !acceptedTerms)}
-                    className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      {isLoading ? (
-                        <>
-                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        <>
-                          {isLogin ? 'Sign In' : 'Create Account'}
-                          <Rocket className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </>
-                      )}
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </Button>
-
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-white/10" />
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-4 bg-transparent text-slate-400">
-                        Or continue with
+                    <Button
+                      type="submit"
+                      disabled={isLoading || (!isLogin && !acceptedTerms)}
+                      className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        {isLoading ? (
+                          <>
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            {isLogin ? 'Sign In' : 'Create Account'}
+                            <Rocket className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </>
+                        )}
                       </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </Button>
+
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-white/10" />
+                      </div>
+                      <div className="relative flex justify-center text-sm">
+                        <span className="px-4 bg-transparent text-slate-400">
+                          Or continue with
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
                     <div className="relative">
                       <div className="absolute inset-0 flex items-center">
@@ -614,7 +612,7 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
               {/* Features Preview */}
               <div className="mt-8 pt-8 border-t border-white/10">
                 <p className="text-xs text-slate-400 mb-4 uppercase tracking-wider">
-                  Powered by AWS Bedrock
+                  Platform Features
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   {features.slice(0, 4).map((feature, i) => (
@@ -658,7 +656,7 @@ export function LoginPage({ onLogin, onBackToLanding }: LoginPageProps) {
                   <span>GDPR Compliant</span>
                 </div>
               </div>
-              
+
               {/* Copyright Notice */}
               <div className="text-xs text-slate-500 border-t border-white/10 pt-3">
                 © 2025 AI Career Agent Coach • MIT License • All rights reserved

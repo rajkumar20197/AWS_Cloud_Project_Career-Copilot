@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { Search, Book, Video, HelpCircle, ChevronRight, ExternalLink } from 'lucide-react';
+import { Button } from '../components/ui/button';
 
-export default function HelpCenter() {
+interface HelpCenterProps {
+  onBack?: () => void;
+}
+
+export default function HelpCenter({ onBack }: HelpCenterProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const categories = [
@@ -211,6 +216,15 @@ export default function HelpCenter() {
             </a>
           </div>
         </div>
+
+        {/* Back Button */}
+        {onBack && (
+          <div className="text-center mt-8">
+            <Button variant="outline" onClick={onBack}>
+              ← Back to Home
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

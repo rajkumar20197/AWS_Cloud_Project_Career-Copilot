@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
+import { Button } from '../components/ui/button';
 
-export default function FAQ() {
+interface FAQProps {
+  onBack?: () => void;
+}
+
+export default function FAQ({ onBack }: FAQProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -214,6 +219,15 @@ export default function FAQ() {
             </a>
           </div>
         </div>
+
+        {/* Back Button */}
+        {onBack && (
+          <div className="text-center mt-8">
+            <Button variant="outline" onClick={onBack}>
+              ← Back to Home
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Button } from '../components/ui/button';
 
-export default function TermsOfService() {
+interface TermsOfServiceProps {
+  onBack?: () => void;
+}
+
+export default function TermsOfService({ onBack }: TermsOfServiceProps) {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
@@ -187,14 +191,13 @@ export default function TermsOfService() {
           </section>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-gray-200">
-          <Link
-            to="/"
-            className="text-blue-600 hover:text-blue-700 font-semibold"
-          >
-            ← Back to Home
-          </Link>
-        </div>
+        {onBack && (
+          <div className="mt-8 pt-8 border-t border-gray-200 text-center">
+            <Button variant="outline" onClick={onBack}>
+              ← Back to Home
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

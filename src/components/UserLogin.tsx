@@ -51,7 +51,7 @@ const UserLogin: React.FC = () => {
         if (formData.rememberMe) {
           localStorage.setItem('rememberUser', 'true');
         }
-        
+
         // Redirect to dashboard
         window.location.href = '/dashboard';
       } else {
@@ -117,9 +117,9 @@ const UserLogin: React.FC = () => {
               If an account exists with this email, you'll receive reset instructions within a few minutes.
             </AlertDescription>
           </Alert>
-          <Button 
+          <Button
             variant="outline"
-            className="w-full" 
+            className="w-full"
             onClick={() => setResetEmailSent(false)}
           >
             Back to Login
@@ -134,7 +134,7 @@ const UserLogin: React.FC = () => {
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">Welcome Back</CardTitle>
         <CardDescription>
-          Sign in to your AI Career Coach account
+          Sign in to your AI Career Agent Coach account
         </CardDescription>
       </CardHeader>
 
