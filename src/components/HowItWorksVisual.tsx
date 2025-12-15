@@ -54,7 +54,7 @@ export function HowItWorksVisual() {
         >
           <h2 className="text-5xl mb-4">HOW IT WORKS</h2>
           <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            Your journey from graduation to dream job, fully automated
+            Your journey from graduation to dream job
           </p>
         </motion.div>
 

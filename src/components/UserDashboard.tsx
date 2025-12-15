@@ -18,6 +18,7 @@ import {
   Star,
   Briefcase
 } from 'lucide-react';
+import { JobPortalStatus } from './JobPortalStatus';
 
 interface UserProfile {
   userId: string;
@@ -223,8 +224,8 @@ const UserDashboard: React.FC = () => {
               {user.subscription.plan.toUpperCase()} Plan
             </Badge>
             <Button variant="outline" onClick={handleLogout}>
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
+              <User className="w-4 h-4 mr-2" />
+              Logout
             </Button>
           </div>
         </div>
@@ -351,12 +352,15 @@ const UserDashboard: React.FC = () => {
           </Card>
         </div>
 
+        {/* Job Portal Connections */}
+        <JobPortalStatus />
+
         {/* Recent Activity */}
         <Card>
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
             <CardDescription>
-              Your latest career coaching activities
+              Your latest career coaching activities and job portal updates
             </CardDescription>
           </CardHeader>
           <CardContent>

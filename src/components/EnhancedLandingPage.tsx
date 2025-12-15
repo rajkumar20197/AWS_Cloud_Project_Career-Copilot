@@ -529,10 +529,10 @@ export function EnhancedLandingPage({ onGetStarted }: EnhancedLandingPageProps) 
             <div>
               <h4 className="text-white mb-4">Legal</h4>
               <div className="flex flex-col gap-2 text-sm">
-                <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-                <a href="#" className="hover:text-white transition-colors">License (MIT)</a>
-                <a href="#" className="hover:text-white transition-colors">Contact Us</a>
+                <a href="/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Privacy Policy</a>
+                <a href="/terms.html" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Terms of Service</a>
+                <a href="/LICENSE" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">License (MIT)</a>
+                <a href="/contact.html" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact Us</a>
               </div>
             </div>
             <div>
