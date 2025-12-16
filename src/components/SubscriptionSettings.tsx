@@ -1,132 +1,82 @@
-import React, { useState, useEffect } from 'react';
+/**
+ * AI Career Agent Platform - Subscription Settings Component (Refactored)
+ * Copyright (c) 2025 AI Career Agent Coach
+ * 
+ * Refactored for better maintainability using custom hook
+ */
+
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Alert, AlertDescription } from './ui/alert';
 import { Progress } from './ui/progress';
-import { 
-  CreditCard, 
-  Calendar, 
-  AlertTriangle, 
-  CheckCircle, 
+import {
+  CreditCard,
+  Calendar,
+  AlertTriangle,
+  CheckCircle,
   XCircle,
   Download,
-  Settings,
   Crown
 } from 'lucide-react';
-import { subscriptionService } from '../services/subscriptionService';
+import { useSubscription } from '../hooks/useSubscription';
 import { SubscriptionModal } from './SubscriptionModal';
 
 interface SubscriptionSettingsProps {
   userId: string;
 }
 
-interface Subscription {
-  id: string;
-  planId: string;
-  status: string;
-  currentPeriodStart: Date;
-  currentPeriodEnd: Date;
-  cancelAtPeriodEnd: boolean;
-}
+// Helper functions
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'active': return 'text-green-600';
+    case 'canceled': return 'text-red-600';
+    case 'past_due': return 'text-yellow-600';
+    case 'trialing': return 'text-blue-600';
+    default: return 'text-gray-600';
+  }
+};
 
-interface Usage {
-  jobApplications: number;
-  resumeOptimizations: number;
-  interviewPrep: number;
-  aiCoachingSessions: number;
-}
+const getStatusIcon = (status: string) => {
+  switch (status) {
+    case 'active': return <CheckCircle className="h-4 w-4" />;
+    case 'canceled': return <XCircle className="h-4 w-4" />;
+    case 'past_due': return <AlertTriangle className="h-4 w-4" />;
+    default: return <CheckCircle className="h-4 w-4" />;
+  }
+};
 
+const calculateUsagePercentage = (used: number, limit: number) => {
+  if (limit === -1) return 0; // Unlimited
+  return Math.min((used / limit) * 100, 100);
+};
+
+const getUsageColor = (percentage: number) => {
+  if (percentage >= 90) return 'text-red-600';
+  if (percentage >= 75) return 'text-yellow-600';
+  return 'text-green-600';
+};
+
+/**
+ * Subscription Settings Component
+ * Manages subscription, usage, payment methods, and billing history
+ */
 export const SubscriptionSettings: React.FC<SubscriptionSettingsProps> = ({ userId }) => {
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [usage, setUsage] = useState<Usage | null>(null);
-  const [paymentMethods, setPaymentMethods] = useState<any[]>([]);
-  const [invoices, setInvoices] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadSubscriptionData();
-  }, [userId]);
-
-  const loadSubscriptionData = async () => {
-    try {
-      const [subData, usageData, paymentData, invoiceData] = await Promise.all([
-        subscriptionService.getCurrentSubscription(userId),
-        subscriptionService.getUsage(userId),
-        subscriptionService.getPaymentMethods(userId),
-        subscriptionService.getInvoices(userId),
-      ]);
-
-      setSubscription(subData);
-      setUsage(usageData);
-      setPaymentMethods(paymentData);
-      setInvoices(invoiceData);
-    } catch (error) {
-      console.error('Failed to load subscription data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCancelSubscription = async () => {
-    if (!subscription) return;
-    
-    setActionLoading('cancel');
-    try {
-      await subscriptionService.cancelSubscription(subscription.id);
-      await loadSubscriptionData();
-    } catch (error) {
-      console.error('Failed to cancel subscription:', error);
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
-  const handleReactivateSubscription = async () => {
-    if (!subscription) return;
-    
-    setActionLoading('reactivate');
-    try {
-      await subscriptionService.reactivateSubscription(subscription.id);
-      await loadSubscriptionData();
-    } catch (error) {
-      console.error('Failed to reactivate subscription:', error);
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'text-green-600';
-      case 'canceled': return 'text-red-600';
-      case 'past_due': return 'text-yellow-600';
-      case 'trialing': return 'text-blue-600';
-      default: return 'text-gray-600';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'active': return <CheckCircle className="h-4 w-4" />;
-      case 'canceled': return <XCircle className="h-4 w-4" />;
-      case 'past_due': return <AlertTriangle className="h-4 w-4" />;
-      default: return <CheckCircle className="h-4 w-4" />;
-    }
-  };
-
-  const calculateUsagePercentage = (used: number, limit: number) => {
-    if (limit === -1) return 0; // Unlimited
-    return Math.min((used / limit) * 100, 100);
-  };
-
-  const getUsageColor = (percentage: number) => {
-    if (percentage >= 90) return 'text-red-600';
-    if (percentage >= 75) return 'text-yellow-600';
-    return 'text-green-600';
-  };
+  const {
+    subscription,
+    usage,
+    paymentMethods,
+    invoices,
+    loading,
+    actionLoading,
+    plan,
+    cancelSubscription,
+    reactivateSubscription,
+    refreshData,
+  } = useSubscription(userId);
 
   if (loading) {
     return (
@@ -145,8 +95,6 @@ export const SubscriptionSettings: React.FC<SubscriptionSettingsProps> = ({ user
       </div>
     );
   }
-
-  const plan = subscription ? subscriptionService.getPlanById(subscription.planId) : null;
 
   return (
     <div className="space-y-6">
@@ -168,8 +116,8 @@ export const SubscriptionSettings: React.FC<SubscriptionSettingsProps> = ({ user
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-lg font-semibold">{plan.name}</h3>
-                    <Badge 
-                      variant="outline" 
+                    <Badge
+                      variant="outline"
                       className={`flex items-center gap-1 ${getStatusColor(subscription.status)}`}
                     >
                       {getStatusIcon(subscription.status)}
@@ -187,7 +135,7 @@ export const SubscriptionSettings: React.FC<SubscriptionSettingsProps> = ({ user
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Calendar className="h-4 w-4" />
                 <span>
-                  {subscription.cancelAtPeriodEnd 
+                  {subscription.cancelAtPeriodEnd
                     ? `Cancels on ${new Date(subscription.currentPeriodEnd).toLocaleDateString()}`
                     : `Renews on ${new Date(subscription.currentPeriodEnd).toLocaleDateString()}`
                   }
@@ -205,24 +153,24 @@ export const SubscriptionSettings: React.FC<SubscriptionSettingsProps> = ({ user
               )}
 
               <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setShowUpgradeModal(true)}
                 >
                   Change Plan
                 </Button>
-                
+
                 {subscription.cancelAtPeriodEnd ? (
-                  <Button 
-                    onClick={handleReactivateSubscription}
+                  <Button
+                    onClick={reactivateSubscription}
                     disabled={actionLoading === 'reactivate'}
                   >
                     {actionLoading === 'reactivate' ? 'Reactivating...' : 'Reactivate'}
                   </Button>
                 ) : (
-                  <Button 
-                    variant="destructive" 
-                    onClick={handleCancelSubscription}
+                  <Button
+                    variant="destructive"
+                    onClick={cancelSubscription}
                     disabled={actionLoading === 'cancel'}
                   >
                     {actionLoading === 'cancel' ? 'Canceling...' : 'Cancel Subscription'}
@@ -258,7 +206,7 @@ export const SubscriptionSettings: React.FC<SubscriptionSettingsProps> = ({ user
               const limit = plan.limits[key as keyof typeof plan.limits];
               const percentage = calculateUsagePercentage(value, limit);
               const isUnlimited = limit === -1;
-              
+
               return (
                 <div key={key} className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
@@ -369,7 +317,7 @@ export const SubscriptionSettings: React.FC<SubscriptionSettingsProps> = ({ user
         open={showUpgradeModal}
         onOpenChange={setShowUpgradeModal}
         currentPlanId={subscription?.planId}
-        onSubscriptionSuccess={loadSubscriptionData}
+        onSubscriptionSuccess={refreshData}
       />
     </div>
   );

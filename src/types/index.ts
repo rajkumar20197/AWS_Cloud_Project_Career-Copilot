@@ -4,6 +4,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  avatar?: string;
+  phone?: string;
   careerStage: 'student' | 'graduate' | 'professional';
   graduationDate?: string;
   currentRole?: string;
@@ -197,3 +199,26 @@ export type NavigationPage =
   | 'help'
   | 'faq'
   | 'support';
+
+// User authentication data
+export interface UserData {
+  name: string;
+  email: string;
+  userId: string;
+  signInDetails?: {
+    loginId: string;
+  };
+}
+
+// Public pages that don't require authentication
+export const PUBLIC_PAGES: NavigationPage[] = [
+  'landing',
+  'login',
+  'onboarding',
+  'contact',
+  'privacy',
+  'terms',
+  'faq',
+  'help',
+  'support',
+];

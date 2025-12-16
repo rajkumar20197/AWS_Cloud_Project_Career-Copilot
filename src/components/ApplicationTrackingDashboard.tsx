@@ -4,12 +4,12 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { 
-  TrendingUp, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
-  AlertCircle, 
+import {
+  TrendingUp,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
   BarChart3,
   Calendar,
   MapPin,
@@ -22,15 +22,15 @@ import applicationStatusBot from '../services/applicationStatusBot';
 import demoDataService from '../services/demoDataService';
 
 const ApplicationTrackingDashboard = () => {
-  const [applications, setApplications] = useState([]);
-  const [summary, setSummary] = useState({
+  const [applications, setApplications] = useState<any[]>([]);
+  const [summary, setSummary] = useState<any>({
     total: 0,
     byStatus: {},
     byPlatform: {},
     recentUpdates: [],
     actionRequired: []
   });
-  const [insights, setInsights] = useState([]);
+  const [insights, setInsights] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -42,13 +42,13 @@ const ApplicationTrackingDashboard = () => {
   const loadApplicationData = async () => {
     try {
       setLoading(true);
-      
+
       // Load demo data to show application tracking functionality
       const trackingData = demoDataService.getApplicationTrackingData();
       setSummary(trackingData.summary);
       setInsights(trackingData.insights);
       setApplications(trackingData.applications);
-      
+
     } catch (error) {
       console.error('Error loading application data:', error);
     } finally {
@@ -91,7 +91,7 @@ const ApplicationTrackingDashboard = () => {
 
   const filteredApplications = applications.filter(app => {
     const matchesFilter = filter === 'all' || app.currentStatus === filter;
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch = searchTerm === '' ||
       app.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.position.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesFilter && matchesSearch;
@@ -111,7 +111,7 @@ const ApplicationTrackingDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-        
+
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
@@ -199,11 +199,11 @@ const ApplicationTrackingDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Applications List */}
           <div className="lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Applications</h2>
-            
+
             <div className="space-y-4">
               {filteredApplications.length === 0 ? (
                 <div className="text-center py-8">
@@ -217,30 +217,30 @@ const ApplicationTrackingDashboard = () => {
                         <h3 className="font-semibold text-gray-900">{app.company}</h3>
                         <p className="text-gray-600">{app.position}</p>
                         <p className="text-sm text-gray-500">
-                          Applied: {new Date(app.applicationDate).toLocaleDateString()}
+                          Applied: {app.applicationDate ? new Date(app.applicationDate).toLocaleDateString() : 'N/A'}
                         </p>
                       </div>
-                      
+
                       <div className="flex items-center space-x-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(app.currentStatus)}`}>
-                          {app.currentStatus.replace('_', ' ')}
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(app.currentStatus || 'submitted')}`}>
+                          {(app.currentStatus || 'submitted').replace('_', ' ')}
                         </span>
-                        {getStatusIcon(app.currentStatus)}
+                        {getStatusIcon(app.currentStatus || 'submitted')}
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-1">
-                          {app.platforms.map((platform, idx) => (
+                          {(app.platforms || []).map((platform, idx) => (
                             <span key={idx} className="text-lg" title={platform.platform}>
                               {getPlatformIcon(platform.platform)}
                             </span>
                           ))}
                         </div>
-                        
+
                         <div className="text-sm text-gray-500">
-                          Last update: {new Date(app.lastUpdate).toLocaleDateString()}
+                          Last update: {app.lastUpdate ? new Date(app.lastUpdate).toLocaleDateString() : 'N/A'}
                         </div>
                       </div>
 
@@ -250,7 +250,7 @@ const ApplicationTrackingDashboard = () => {
                             High Priority
                           </span>
                         )}
-                        
+
                         <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
                           View Details
                         </button>
@@ -272,11 +272,11 @@ const ApplicationTrackingDashboard = () => {
 
           {/* Insights and Analytics */}
           <div className="space-y-6">
-            
+
             {/* Platform Performance */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Platform Performance</h3>
-              
+
               <div className="space-y-3">
                 {Object.entries(summary.byPlatform).map(([platform, count]) => (
                   <div key={platform} className="flex items-center justify-between">
@@ -293,7 +293,7 @@ const ApplicationTrackingDashboard = () => {
             {/* AI Insights */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">AI Insights</h3>
-              
+
               <div className="space-y-3">
                 {insights.map((insight, index) => (
                   <div key={index} className="flex items-start p-3 bg-blue-50 rounded-lg">
@@ -308,7 +308,7 @@ const ApplicationTrackingDashboard = () => {
             {summary.actionRequired.length > 0 && (
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Action Required</h3>
-                
+
                 <div className="space-y-3">
                   {summary.actionRequired.slice(0, 3).map((app, index) => (
                     <div key={index} className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
@@ -326,18 +326,18 @@ const ApplicationTrackingDashboard = () => {
             {/* Quick Actions */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-              
+
               <div className="space-y-2">
                 <button className="w-full text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
                   <span className="font-medium">📝 Add New Application</span>
                   <p className="text-sm text-gray-600">Track a new job application</p>
                 </button>
-                
+
                 <button className="w-full text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
                   <span className="font-medium">📊 Export Data</span>
                   <p className="text-sm text-gray-600">Download application report</p>
                 </button>
-                
+
                 <button className="w-full text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
                   <span className="font-medium">⚙️ Configure Tracking</span>
                   <p className="text-sm text-gray-600">Set up automatic monitoring</p>

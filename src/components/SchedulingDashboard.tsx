@@ -8,7 +8,7 @@ import { Bot, Mail, Calendar, Clock, TrendingUp, CheckCircle, AlertTriangle, Ref
 import demoDataService from '../services/demoDataService';
 
 const SchedulingDashboard = () => {
-  const [agentData, setAgentData] = useState(null);
+  const [agentData, setAgentData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const SchedulingDashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-8">
-      
+
       {/* Header */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex items-center justify-between">
@@ -91,13 +91,13 @@ const SchedulingDashboard = () => {
               Monitor your AI availability agent's performance and activity
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             <div className="flex items-center px-3 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800">
               <div className="w-2 h-2 rounded-full mr-2 bg-green-500"></div>
               Agent Active
             </div>
-            
+
             <button
               onClick={loadAgentData}
               className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -153,21 +153,21 @@ const SchedulingDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
+
         {/* Recent Activity */}
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
             <TrendingUp className="h-5 w-5 mr-2" />
             Recent Agent Activity
           </h2>
-          
+
           <div className="space-y-4">
             {agentData.recentActivity.map((activity) => (
               <div key={activity.id} className="flex items-start p-4 bg-gray-50 rounded-lg">
                 <div className={`p-2 rounded-full ${getStatusColor(activity.status)} mr-4`}>
                   {getActivityIcon(activity.type)}
                 </div>
-                
+
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
                     <h3 className="font-medium text-gray-900">
@@ -175,11 +175,11 @@ const SchedulingDashboard = () => {
                     </h3>
                     <span className="text-sm text-gray-500">{activity.timestamp}</span>
                   </div>
-                  
+
                   <p className="text-sm text-gray-600 mb-1">
                     {activity.position} at {activity.company}
                   </p>
-                  
+
                   <p className="text-sm text-gray-500">
                     {activity.details}
                   </p>
@@ -195,28 +195,27 @@ const SchedulingDashboard = () => {
             <Calendar className="h-5 w-5 mr-2" />
             Upcoming Interviews
           </h2>
-          
+
           <div className="space-y-4">
-            {upcomingInterviews.map((interview, index) => (
+            {agentData.upcomingInterviews && agentData.upcomingInterviews.map((interview, index) => (
               <div key={index} className="flex items-start p-4 bg-gray-50 rounded-lg">
                 <div className="p-2 bg-blue-100 text-blue-600 rounded-full mr-4">
                   <Calendar className="h-4 w-4" />
                 </div>
-                
+
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
                     <h3 className="font-medium text-gray-900">{interview.company}</h3>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      interview.status === 'confirmed' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${interview.status === 'confirmed'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-yellow-100 text-yellow-800'
+                      }`}>
                       {interview.status}
                     </span>
                   </div>
-                  
+
                   <p className="text-sm text-gray-600 mb-2">{interview.position}</p>
-                  
+
                   <div className="flex items-center text-sm text-gray-500 space-x-4">
                     <span>📅 {new Date(interview.date).toLocaleDateString()}</span>
                     <span>🕐 {interview.time}</span>
@@ -234,13 +233,13 @@ const SchedulingDashboard = () => {
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           Agent Performance This Week
         </h2>
-        
+
         <div className="grid grid-cols-7 gap-2 mb-4">
           {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
             <div key={day} className="text-center">
               <div className="text-sm font-medium text-gray-600 mb-2">{day}</div>
               <div className="bg-gray-200 rounded-full h-20 flex items-end justify-center p-1">
-                <div 
+                <div
                   className="bg-blue-500 rounded-full w-full transition-all duration-300"
                   style={{ height: `${Math.random() * 80 + 20}%` }}
                 ></div>
@@ -251,7 +250,7 @@ const SchedulingDashboard = () => {
             </div>
           ))}
         </div>
-        
+
         <div className="flex items-center justify-center space-x-6 text-sm text-gray-600">
           <div className="flex items-center">
             <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
@@ -263,18 +262,18 @@ const SchedulingDashboard = () => {
       {/* Quick Actions */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button className="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg text-left transition-colors">
             <h3 className="font-medium text-blue-900">⚙️ Agent Settings</h3>
             <p className="text-sm text-blue-700 mt-1">Configure availability preferences</p>
           </button>
-          
+
           <button className="p-4 bg-green-50 hover:bg-green-100 rounded-lg text-left transition-colors">
             <h3 className="font-medium text-green-900">📊 View Analytics</h3>
             <p className="text-sm text-green-700 mt-1">Detailed performance metrics</p>
           </button>
-          
+
           <button className="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg text-left transition-colors">
             <h3 className="font-medium text-purple-900">📧 Email Templates</h3>
             <p className="text-sm text-purple-700 mt-1">Customize response templates</p>

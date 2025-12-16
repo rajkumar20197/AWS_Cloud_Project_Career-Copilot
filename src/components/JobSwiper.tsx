@@ -3,12 +3,12 @@ import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'motion/react';
-import { 
-  Heart, 
-  X, 
-  MapPin, 
-  Building2, 
-  DollarSign, 
+import {
+  Heart,
+  X,
+  MapPin,
+  Building2,
+  DollarSign,
   Briefcase,
   Clock,
   Star,
@@ -54,41 +54,121 @@ export function JobSwiper() {
   const loadAIJobs = async () => {
     try {
       setLoading(true);
-      
-      // Get user profile
+
+      // Try to get user profile
       const userId = ProfileService.getUserId();
-      const userProfile = await ProfileService.getProfile(userId);
-      
-      if (!userProfile) {
-        toast.error('Please complete your profile first');
-        setLoading(false);
-        return;
+      let userProfile = null;
+
+      try {
+        userProfile = await ProfileService.getProfile(userId);
+      } catch (error) {
+        console.log('Backend unavailable, using demo data');
       }
 
-      // Generate jobs with AI
-      const response = await fetch('http://localhost:3001/api/ai-jobs/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userProfile: {
-            currentRole: userProfile.profile?.currentRole,
-            targetRole: userProfile.profile?.targetRole,
-            skills: userProfile.profile?.skills,
-            experience: userProfile.profile?.experience,
-            location: userProfile.profile?.location,
-            salaryExpectation: userProfile.profile?.salaryExpectation,
-          },
-          count: 15,
-        }),
-      });
+      // Try to generate jobs with AI if backend is available
+      if (userProfile) {
+        try {
+          const response = await fetch('http://localhost:3001/api/ai-jobs/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userProfile: {
+                currentRole: userProfile.profile?.currentRole,
+                targetRole: userProfile.profile?.targetRole,
+                skills: userProfile.profile?.skills,
+                experience: userProfile.profile?.experience,
+                location: userProfile.profile?.location,
+                salaryExpectation: userProfile.profile?.salaryExpectation,
+              },
+              count: 15,
+            }),
+          });
 
-      if (!response.ok) throw new Error('Failed to generate jobs');
+          if (response.ok) {
+            const data = await response.json();
+            setJobs(data.jobs);
+            toast.success(`🤖 Generated ${data.jobs.length} personalized jobs with AI!`);
+            setLoading(false);
+            return;
+          }
+        } catch (error) {
+          console.log('AI job generation failed, using demo data');
+        }
+      }
 
-      const data = await response.json();
-      setJobs(data.jobs);
-      toast.success(`🤖 Generated ${data.jobs.length} personalized jobs with AI!`);
+      // Fallback to demo data
+      const demoJobs: Job[] = [
+        {
+          id: '1',
+          company: 'TechCorp',
+          position: 'Senior Software Engineer',
+          location: 'San Francisco, CA',
+          salary: '$120k - $180k',
+          type: 'Full-time',
+          experience: '3-5 years',
+          matchScore: 92,
+          description: 'Join our team building cutting-edge cloud solutions. Work with modern tech stack including React, Node.js, and AWS.',
+          tags: ['React', 'Node.js', 'AWS', 'TypeScript'],
+          postedDays: 2,
+        },
+        {
+          id: '2',
+          company: 'StartupXYZ',
+          position: 'Full Stack Developer',
+          location: 'Remote',
+          salary: '$100k - $150k',
+          type: 'Full-time',
+          experience: '2-4 years',
+          matchScore: 88,
+          description: 'Build innovative products in a fast-paced startup environment. Flexible hours and remote work.',
+          tags: ['JavaScript', 'Python', 'Docker', 'MongoDB'],
+          postedDays: 5,
+        },
+        {
+          id: '3',
+          company: 'Enterprise Solutions Inc',
+          position: 'Frontend Developer',
+          location: 'New York, NY',
+          salary: '$90k - $130k',
+          type: 'Full-time',
+          experience: '1-3 years',
+          matchScore: 85,
+          description: 'Create beautiful user interfaces for enterprise applications. Work with a talented design team.',
+          tags: ['React', 'CSS', 'JavaScript', 'Figma'],
+          postedDays: 1,
+        },
+        {
+          id: '4',
+          company: 'AI Innovations',
+          position: 'Machine Learning Engineer',
+          location: 'Boston, MA',
+          salary: '$130k - $190k',
+          type: 'Full-time',
+          experience: '3-6 years',
+          matchScore: 78,
+          description: 'Build AI models that power next-generation products. Work with cutting-edge ML frameworks.',
+          tags: ['Python', 'TensorFlow', 'PyTorch', 'AWS'],
+          postedDays: 3,
+        },
+        {
+          id: '5',
+          company: 'CloudTech',
+          position: 'DevOps Engineer',
+          location: 'Seattle, WA',
+          salary: '$110k - $160k',
+          type: 'Full-time',
+          experience: '2-5 years',
+          matchScore: 82,
+          description: 'Manage cloud infrastructure and CI/CD pipelines. Automate everything!',
+          tags: ['AWS', 'Docker', 'Kubernetes', 'Terraform'],
+          postedDays: 4,
+        },
+      ];
+
+      setJobs(demoJobs);
+      toast.info('📋 Showing demo jobs (backend offline)');
     } catch (error: any) {
-      console.error('Error loading AI jobs:', error);
+      console.error('Error loading jobs:', error);
       toast.error('Failed to load jobs: ' + error.message);
     } finally {
       setLoading(false);
@@ -101,11 +181,11 @@ export function JobSwiper() {
     if (currentJob) {
       setLikedJobs([...likedJobs, currentJob]);
       setLastAction('like');
-      
+
       // Celebrate! 🎉
       const { celebrate } = await import('../utils/celebrations');
       celebrate.jobSaved();
-      
+
       toast.success(`❤️ Saved ${currentJob.position} at ${currentJob.company}`);
       nextCard();
     }
@@ -161,13 +241,13 @@ export function JobSwiper() {
             </div>
             <p className="text-slate-600">🤖 AI is generating personalized jobs for you...</p>
           </div>
-          
+
           <div className="grid grid-cols-3 gap-4 mb-6">
             <div className="h-24 bg-white rounded-lg border border-slate-200 animate-pulse" />
             <div className="h-24 bg-white rounded-lg border border-slate-200 animate-pulse" />
             <div className="h-24 bg-white rounded-lg border border-slate-200 animate-pulse" />
           </div>
-          
+
           <div className="relative h-[600px]">
             <Card className="w-full max-w-md mx-auto h-[550px] p-8">
               <div className="space-y-4 animate-pulse">
@@ -440,7 +520,7 @@ function SwipeCard({ job, onLike, onPass, getMatchScoreColor }: SwipeCardProps) 
       >
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
-          animate={{ 
+          animate={{
             opacity: useTransform(x, [0, 100], [0, 1]),
             scale: useTransform(x, [0, 100], [0.5, 1])
           }}
@@ -456,7 +536,7 @@ function SwipeCard({ job, onLike, onPass, getMatchScoreColor }: SwipeCardProps) 
       >
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
-          animate={{ 
+          animate={{
             opacity: useTransform(x, [-100, 0], [1, 0]),
             scale: useTransform(x, [-100, 0], [1, 0.5])
           }}

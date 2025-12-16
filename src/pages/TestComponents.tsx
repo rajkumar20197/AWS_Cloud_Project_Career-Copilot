@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { AdminDashboard } from '../components/AdminDashboard';
 import { AdminLogin } from '../components/AdminLogin';
-import { AgentDashboard } from '../components/AgentDashboard';
 import { SubscriptionModal } from '../components/SubscriptionModal';
 import { UpgradeButton } from '../components/UpgradeButton';
 import { UniversalHeader } from '../components/UniversalHeader';
@@ -22,11 +21,11 @@ export const TestComponents: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <UniversalHeader 
+      <UniversalHeader
         user={mockUser}
         onLogout={() => console.log('Logout clicked')}
       />
-      
+
       <div className="container mx-auto p-6 space-y-8">
         <Card>
           <CardHeader>
@@ -40,38 +39,33 @@ export const TestComponents: React.FC = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Button 
+              <Button
                 onClick={() => setActiveTab('admin-login')}
                 variant={activeTab === 'admin-login' ? 'default' : 'outline'}
               >
                 Admin Login
               </Button>
-              <Button 
+              <Button
                 onClick={() => setActiveTab('admin')}
                 variant={activeTab === 'admin' ? 'default' : 'outline'}
               >
                 Admin Dashboard
               </Button>
-              <Button 
-                onClick={() => setActiveTab('agents')}
-                variant={activeTab === 'agents' ? 'default' : 'outline'}
-              >
-                AI Agents
-              </Button>
-              <Button 
+
+              <Button
                 onClick={() => setActiveTab('subscription')}
                 variant={activeTab === 'subscription' ? 'default' : 'outline'}
               >
                 Subscription System
               </Button>
             </div>
-            
+
             <div className="flex gap-4">
-              <UpgradeButton 
+              <UpgradeButton
                 currentPlanId="starter"
                 onUpgradeSuccess={() => console.log('Upgrade successful')}
               />
-              <Button 
+              <Button
                 onClick={() => setShowSubscriptionModal(true)}
                 variant="outline"
               >
@@ -89,21 +83,16 @@ export const TestComponents: React.FC = () => {
               <AdminLogin onLoginSuccess={() => setActiveTab('admin')} />
             </div>
           )}
-          
+
           {activeTab === 'admin' && (
             <div>
               <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
               <AdminDashboard />
             </div>
           )}
-          
-          {activeTab === 'agents' && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">AI Agent Dashboard</h2>
-              <AgentDashboard />
-            </div>
-          )}
-          
+
+
+
           {activeTab === 'subscription' && (
             <div>
               <h2 className="text-2xl font-bold mb-4">Subscription System</h2>
@@ -130,7 +119,7 @@ export const TestComponents: React.FC = () => {
                         </ul>
                       </CardContent>
                     </Card>
-                    
+
                     <Card className="border-primary">
                       <CardHeader className="pb-3">
                         <CardTitle className="text-lg flex items-center gap-2">
@@ -149,7 +138,7 @@ export const TestComponents: React.FC = () => {
                         </ul>
                       </CardContent>
                     </Card>
-                    
+
                     <Card>
                       <CardHeader className="pb-3">
                         <CardTitle className="text-lg">Enterprise Plan</CardTitle>
