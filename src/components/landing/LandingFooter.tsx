@@ -14,7 +14,7 @@ export function LandingFooter({ onNavigate }: LandingFooterProps) {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid md:grid-cols-3 gap-8 mb-8">
                     <div className="flex flex-col gap-4">
-                        <h3 className="text-2xl font-bold text-white">AI Career Agent Coach</h3>
+                        <h3 className="text-2xl font-bold text-white">Agentic AI Career Coach</h3>
                         <p className="text-slate-500 text-sm max-w-sm">
                             AI-powered career platform helping graduates land their dream jobs with automation and intelligence.
                         </p>
@@ -42,7 +42,7 @@ export function LandingFooter({ onNavigate }: LandingFooterProps) {
                 <div className="border-t border-slate-800 pt-8">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <div className="text-sm">
-                            <strong className="text-white">© 2025 AI Career Agent Coach.</strong> All rights reserved.
+                            <strong className="text-white">© 2025 Agentic AI Career Coach | By Rajkumar Thota.</strong> All rights reserved.
                         </div>
                         <div className="text-sm">
                             Licensed under <span className="text-blue-400">MIT License</span> • Open Source

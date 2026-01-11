@@ -64,7 +64,7 @@ export function HeroSection({ onGetStarted, onWatchDemo }: HeroSectionProps) {
                     >
                         <Badge className="bg-blue-100 text-blue-700 border-blue-200 px-4 py-2 text-sm mb-6">
                             <Sparkles className="w-4 h-4 mr-2 inline" />
-                            AI-Powered Career Platform
+                            Agentic AI Workflows
                         </Badge>
                     </motion.div>
 
@@ -89,8 +89,8 @@ export function HeroSection({ onGetStarted, onWatchDemo }: HeroSectionProps) {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.4 }}
                     >
-                        Set your graduation date. Let AI handle job search, applications,
-                        interview scheduling, and career prep—all while you focus on studying.
+                        Autonomous AI system that reduces manual effort by 95% using RAG architecture.
+                        Let Agentic AI handle job search, applications, and interview detection—automatically.
                     </motion.p>
 
                     <motion.div

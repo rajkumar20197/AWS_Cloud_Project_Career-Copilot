@@ -1,7 +1,7 @@
-# 📐 Architecture Summary - Quick Reference
+# 📐 Architecture Summary - Agentic AI Career Coach
 
-**AI Career Agent Platform**  
-**Date:** December 15, 2024
+**Project:** Agentic AI Career Coach  
+**Date:** January 11, 2026
 
 ---
 
@@ -174,7 +174,10 @@ Redirect to Dashboard
 - OAuth 2.0 (Google, GitHub)
 
 ### **Backend Integration**
-- AWS Services (Cognito, S3, etc.)
+- Node.js + Express
+- AWS Bedrock (Claude 3.5 Haiku) for Agentic AI Workflows
+- AWS DynamoDB
+- AWS Cognito (Authentication)
 - Stripe (Payments)
 - Google APIs (Gmail, Calendar)
 
@@ -315,6 +318,7 @@ Wrap component in `AuthGuard`:
 
 ---
 
-**Last Updated:** December 15, 2024  
-**Version:** 1.0.0  
-**Maintained By:** AI Career Agent Coach Development Team
+**Last Updated:** January 11, 2026  
+**Version:** 2.0.0  
+**Maintained By:** Agentic AI Career Coach Development Team | Rajkumar Thota
+© 2025 Agentic AI Career Coach | By Rajkumar Thota

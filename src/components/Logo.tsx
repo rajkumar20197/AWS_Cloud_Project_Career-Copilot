@@ -36,7 +36,7 @@ export function Logo({
       {/* Brain logo - bright and visible, no background */}
       <img
         src="/logo-icon.png"
-        alt="AI Career Agent Logo"
+        alt="Agentic AI Career Coach Logo"
         className="w-full h-full object-contain"
         style={{
           filter: 'brightness(1.1) contrast(1.05)'
@@ -54,12 +54,9 @@ export function Logo({
       transition={{ duration: 0.6, delay: 0.5 }}
     >
       <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-extrabold">
-        AI
+        Agentic AI
       </span>
-      <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent font-bold">Career Agent</span>
-      <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent font-extrabold">
-        Coach
-      </span>
+      <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent font-bold">Career Coach</span>
     </motion.div>
   );
 
@@ -99,7 +96,7 @@ export function LogoMinimal({ size = 32, className = '' }: { size?: number; clas
     <div className={`relative flex items-center justify-center ${className}`} style={{ width: size, height: size }}>
       <img
         src="/logo-icon.png"
-        alt="AI Career Agent"
+        alt="Agentic AI Career Coach"
         className="w-full h-full object-contain"
         style={{
           filter: 'drop-shadow(0 2px 6px rgba(0, 212, 255, 0.2))'
@@ -115,7 +112,7 @@ export function LogoBadge({ size = 48, className = '' }: { size?: number; classN
     <div className={`relative flex items-center justify-center ${className}`} style={{ width: size, height: size }}>
       <img
         src="/logo-icon.png"
-        alt="AI Career Agent"
+        alt="Agentic AI Career Coach"
         className="w-full h-full object-contain"
         style={{
           filter: 'drop-shadow(0 4px 8px rgba(0, 212, 255, 0.3))'

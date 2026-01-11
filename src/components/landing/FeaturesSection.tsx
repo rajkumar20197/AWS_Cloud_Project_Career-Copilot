@@ -22,8 +22,8 @@ interface Feature {
 const features: Feature[] = [
     {
         icon: Brain,
-        title: 'AI-Powered Matching',
-        description: '0-100 compatibility scores using AWS Bedrock Claude 3.5 Haiku',
+        title: 'Agentic AI Workflows',
+        description: 'Reducing manual effort by 95% using RAG and AWS Bedrock Claude 3.5 Haiku',
         color: 'from-blue-500 to-cyan-500',
         delay: 0.1,
     },
@@ -43,8 +43,8 @@ const features: Feature[] = [
     },
     {
         icon: Mail,
-        title: 'Gmail Integration',
-        description: 'Automated interview detection and response management',
+        title: 'Autonomous AI Agent',
+        description: 'Real-time Autonomous Interview Detection and response management',
         color: 'from-green-500 to-emerald-500',
         delay: 0.4,
     },

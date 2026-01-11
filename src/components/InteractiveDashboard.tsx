@@ -1,6 +1,6 @@
 /**
- * AI Career Agent Platform - Interactive Dashboard Component (Refactored)
- * Copyright (c) 2025 AI Career Agent Coach
+ * Agentic AI Career Coach - Interactive Dashboard Component (Refactored)
+ * Copyright (c) 2025 Agentic AI Career Coach | By Rajkumar Thota
  * 
  * Refactored for better maintainability with extracted widgets
  */

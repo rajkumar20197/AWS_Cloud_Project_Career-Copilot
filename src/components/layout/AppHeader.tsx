@@ -42,9 +42,9 @@ export function AppHeader({
                         <Menu className="w-5 h-5" />
                     </button>
                     <div>
-                        <h1 className="text-xl">AI Career Agent Platform</h1>
+                        <h1 className="text-xl">Agentic AI Career Coach</h1>
                         <p className="text-sm text-slate-600">
-                            Authenticated • © 2025 AI Career Agent Coach
+                            Authenticated • © 2025 Agentic AI Career Coach | By Rajkumar Thota
                         </p>
                     </div>
                 </div>

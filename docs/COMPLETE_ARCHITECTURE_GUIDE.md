@@ -1,8 +1,8 @@
-# 🏗️ Career Copilot - Complete Architecture Guide
+# 🏗️ Agentic AI Career Coach - Complete Architecture Guide
 
 ## 📋 **EXECUTIVE SUMMARY**
 
-**Career Copilot** is an enterprise-grade AI-powered career advancement platform built with modern cloud architecture. The system combines React frontend, Node.js backend, AWS AI services, and secure payment processing to deliver intelligent career guidance at scale.
+**Agentic AI Career Coach** is an autonomous AI career coaching system that reduces manual effort by 95% using RAG architecture and AWS Bedrock. The system combines React frontend, Node.js backend, AWS AI services (Cognito, Bedrock, DynamoDB), and secure payment processing to deliver intelligent career guidance at scale.
 
 ---
 
@@ -59,7 +59,7 @@
 
 **Deployment Options:**
 
-- **Current**: AWS S3 Static Website (HTTP)
+- **Current**: Agentic AI Workflows on AWS
 - **Recommended**: Vercel/Netlify (HTTPS + CDN)
 - **Enterprise**: AWS CloudFront + S3 (HTTPS + Custom Domain)
 
@@ -145,7 +145,7 @@
 │  │  • Email Notifications (SMTP)                      │   │
 │  │  • Calendar Integration (Google)                   │   │
 │  │  • Push Notifications                             │   │
-│  │  • SMS Alerts (Optional)                          │   │
+│  │  • Real-time Autonomous Interview Detection            │
 │  └─────────────────────────────────────────────────────┘   │
 │                                                            │
 │  ┌─────────────────────────────────────────────────────┐   │
@@ -877,7 +877,7 @@ Token Refresh → Session Management → Logout → Token Invalidation
 - 🧠 Custom AI model training
 - 🔮 Predictive career analytics
 - 🎓 Learning and certification platform
-- 🤖 AI career coaching chatbot
+- 🤖 Agentic AI Career Coach Agent
 - 🌟 Personalized career paths
 - 🚀 IPO preparation
 
@@ -935,14 +935,14 @@ Token Refresh → Session Management → Logout → Token Invalidation
 
 ## 🏆 **CONCLUSION**
 
-Career Copilot represents a comprehensive, enterprise-grade AI-powered career advancement platform built with modern cloud architecture. The system is designed for:
+Agentic AI Career Coach represents a comprehensive, autonomous AI-powered career advancement platform built with modern cloud architecture. The system is designed for:
 
 - **Scalability**: From hundreds to millions of users
-- **Security**: Enterprise-grade protection at every layer
+- **Security**: Enterprise-grade protection at every layer (AWS Cognito)
 - **Performance**: Sub-second response times globally
 - **Reliability**: 99.9%+ uptime with automatic failover
-- **Profitability**: High-margin SaaS business model
+- **Efficiency**: Reduces manual effort by 95% using RAG
 
-The architecture supports rapid growth while maintaining security, performance, and user experience standards. With the foundation in place, Career Copilot is positioned to become the leading AI-powered career platform in the market.
+The architecture supports rapid growth while maintaining security, performance, and user experience standards. With the foundation in place, Agentic AI Career Coach is positioned to become the leading autonomous AI career platform in the market.
 
-**Your Career Copilot platform is ready to help millions of people advance their careers! 🚀**
+**Your Agentic AI Career Coach platform is ready to help millions of people advance their careers! 🚀**

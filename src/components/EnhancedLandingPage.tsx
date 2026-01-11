@@ -1,6 +1,6 @@
 /**
- * AI Career Agent Platform - Enhanced Landing Page Component (Refactored)
- * Copyright (c) 2025 AI Career Agent Coach
+ * Agentic AI Career Coach - Enhanced Landing Page Component (Refactored)
+ * Copyright (c) 2025 Agentic AI Career Coach | By Rajkumar Thota
  * 
  * Refactored for better performance with lazy loading and code splitting
  * 
@@ -123,7 +123,7 @@ export function EnhancedLandingPage({ onGetStarted, onNavigate }: EnhancedLandin
               transition={{ delay: 0.3, duration: 0.6 }}
               className="text-5xl font-bold text-white mb-4"
             >
-              Welcome to AI Career Agent
+              Welcome to Agentic AI Career Coach
             </motion.h1>
             <motion.p
               initial={{ y: 20, opacity: 0 }}

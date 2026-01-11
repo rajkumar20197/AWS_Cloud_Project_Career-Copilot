@@ -1,4 +1,4 @@
-# Career Copilot: AWS Cloud Architecture Presentation
+# Agentic AI Career Coach: AWS Cloud Architecture Presentation
 
 ## Enterprise-Level AWS Services Implementation
 
@@ -6,14 +6,14 @@
 
 ## Slide 1: Title Slide
 
-**Career Copilot: AI-Powered SaaS Platform**
+**Agentic AI Career Coach: Autonomous Career Platform**
 _AWS Cloud Architecture & Services Implementation_
 
 - **Project:** Full-Stack AI Career Platform
 - **Architecture:** Multi-Region AWS Cloud Infrastructure
 - **Services:** 15+ AWS Services Integrated
 - **Presenter:** Rajkumar Thota
-- **Date:** December 2024
+- **Date:** January 2026
 
 ---
 
@@ -28,7 +28,8 @@ _AWS Cloud Architecture & Services Implementation_
 - ✅ **Enterprise Security** (OWASP Top 10)
 - ✅ **Cost-Optimized** ($3-50/month scaling)
 - ✅ **Production-Ready** Infrastructure
-- ✅ **AI/ML Integration** (AWS Bedrock)
+- ✅ **AI/ML Integration** (AWS Bedrock - Claude 3.5 Haiku)
+- ✅ **95% Manual Effort Reduction** (RAG Architecture)
 
 ### Business Impact:
 
@@ -629,7 +630,7 @@ Resources:
 
 ### **Next Steps:**
 
-1. **Domain Registration** - careercopilot.com
+1. **Domain Registration** - agenticaicareercoach.agency
 2. **Production Deployment** - Go-live preparation
 3. **Monitoring Setup** - CloudWatch dashboards
 4. **Performance Testing** - Load testing validation

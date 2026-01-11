@@ -32,6 +32,7 @@ Complete guide to customer support, feedback, and contact options.
 - **What:** In-app feedback submission
 - **Response Time:** Reviewed within 48 hours
 - **Cost:** FREE
+- **Autonomous AI Agent:** Real-time career support and automated task execution
 - **Best for:** Feature requests, suggestions, complaints
 
 ### 5. Help Center

@@ -1,4 +1,4 @@
-# AWS Career Agent - TODO List
+# Agentic AI Career Coach - TODO List
 
 ## Current Status
 
@@ -7,7 +7,7 @@
 - ✅ Profile system with DynamoDB integration
 - ✅ AI integration with AWS Bedrock
 - ✅ Full-stack application with 20+ features
-- ✅ Domain strategy decided: **careercopilot.com**
+- ✅ Domain strategy decided: **agenticaicareercoach.agency**
 - ✅ Complete setup guides created (5 comprehensive docs)
 - ✅ Navigation system fully functional (all pages working)
 - ⚠️ **Social Login (GitHub/Google):** Buttons present but OAuth not configured
@@ -189,7 +189,7 @@ When users click GitHub/Google buttons:
 ### Phase 3: VPC - us-east-1 Primary (10 min)
 
 - [ ] VPC → Create VPC → "VPC and more"
-- [ ] Name: `career-copilot-vpc-east`
+- [ ] Name: `agentic-ai-career-coach-vpc-east`
 - [ ] IPv4 CIDR: `10.0.0.0/16`
 - [ ] Availability Zones: 2
 - [ ] Public subnets: 2
@@ -206,7 +206,7 @@ When users click GitHub/Google buttons:
 
 - [ ] Change region to **us-west-2**
 - [ ] VPC → Create VPC → "VPC and more"
-- [ ] Name: `career-copilot-vpc-west`
+- [ ] Name: `agentic-ai-career-coach-vpc-west`
 - [ ] IPv4 CIDR: `10.1.0.0/16`
 - [ ] Availability Zones: 2
 - [ ] Public subnets: 2
@@ -454,8 +454,8 @@ All guides are in `docs/` folder:
 
 ---
 
-**Last Updated:** November 19, 2025  
-**Status:** Ready to deploy careercopilot.com  
+**Last Updated:** January 11, 2026  
+**Status:** Ready to deploy Agentic AI Career Coach  
 **Next Action:** Register domain on Route 53
 
 ---

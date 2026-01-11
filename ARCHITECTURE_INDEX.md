@@ -1,13 +1,13 @@
 # 📚 Architecture Documentation Index
 
-**AI Career Agent Platform - Complete Architecture Guide**  
-**Date:** December 15, 2024
+**Agentic AI Career Coach - Complete Architecture Guide**  
+**Date:** January 11, 2026
 
 ---
 
 ## 🎯 **Purpose**
 
-This index provides quick access to all architecture documentation for the AI Career Agent Platform. Use this as your starting point to understand the project structure, component relationships, and system architecture.
+This index provides quick access to all architecture documentation for the Agentic AI Career Coach. Use this as your starting point to understand the autonomous AI coaching system, RAG architecture, and AWS cloud integration.
 
 ---
 
@@ -422,9 +422,9 @@ Before deploying to production:
 
 ---
 
-**Last Updated:** December 15, 2024  
-**Version:** 1.0.0  
-**Maintained By:** AI Career Agent Coach Development Team
+**Last Updated:** January 11, 2026  
+**Version:** 2.0.0  
+**Maintained By:** Agentic AI Career Coach Development Team | Rajkumar Thota
 
 ---
 

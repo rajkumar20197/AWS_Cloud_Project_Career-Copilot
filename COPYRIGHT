@@ -1,4 +1,4 @@
-AI Career Agent Platform
+Agentic AI Career Coach
 Copyright Notice and License Information
 
 ================================================================================
@@ -6,11 +6,11 @@ Copyright Notice and License Information
 COPYRIGHT NOTICE
 ================================================================================
 
-Copyright (c) 2025 AI Career Agent Coach
+Copyright (c) 2025 Agentic AI Career Coach | By Rajkumar Thota
 All rights reserved.
 
 This software and associated documentation files (the "Software") are the 
-intellectual property of AI Career Agent Coach.
+intellectual property of Agentic AI Career Coach.
 
 ================================================================================
 
@@ -43,8 +43,8 @@ If you use, modify, or distribute this software, you must:
 4. Not remove or alter copyright notices
 
 Example attribution:
-"Based on AI Career Agent Platform by AI Career Agent Coach
- https://github.com/rajkumar20197/ai-career-agent-aws-bedrock
+"Based on Agentic AI Career Coach by Rajkumar Thota
+ https://github.com/rajkumar20197/AWS_Cloud_Project_Career-Copilot
  Licensed under MIT License"
 
 ================================================================================
@@ -52,11 +52,11 @@ Example attribution:
 TRADEMARK NOTICE
 ================================================================================
 
-"AI Career Agent Coach" and related branding are trademarks of AI Career Agent Coach.
+"Agentic AI Career Coach" and related branding are trademarks of Agentic AI Career Coach | Rajkumar Thota.
 Use of these trademarks requires explicit permission.
 
 If you fork or create derivative works:
-- You may NOT use the "AI Career Agent Coach" name or branding
+- You may NOT use the "Agentic AI Career Coach" name or branding
 - You must create your own unique branding and identity
 - You must still provide attribution to the original work
 
@@ -67,10 +67,11 @@ THIRD-PARTY LICENSES
 
 This project includes third-party software components with their own licenses:
 
-- React: MIT License
-- AWS SDK: Apache License 2.0
+- React 18: MIT License
+- AWS SDK: Apache License 2.0 (Cognito, Bedrock, DynamoDB, S3)
 - Tailwind CSS: MIT License
 - TypeScript: Apache License 2.0
+- Node.js: MIT License
 - And others listed in package.json
 
 See individual package licenses for complete terms.
@@ -81,9 +82,9 @@ CONTACT INFORMATION
 ================================================================================
 
 For licensing questions or permissions:
-- Email: contact@aicareeragentcoach.com
-- GitHub: https://github.com/rajkumar20197/ai-career-agent-aws-bedrock
-- Issues: https://github.com/rajkumar20197/ai-career-agent-aws-bedrock/issues
+- Email: rajkumarthota979@gmail.com
+- GitHub: https://github.com/rajkumar20197/AWS_Cloud_Project_Career-Copilot
+- Issues: https://github.com/rajkumar20197/AWS_Cloud_Project_Career-Copilot/issues
 
 ================================================================================
 
@@ -100,4 +101,4 @@ SOFTWARE.
 
 ================================================================================
 
-Last Updated: December 2025
+Last Updated: January 11, 2026

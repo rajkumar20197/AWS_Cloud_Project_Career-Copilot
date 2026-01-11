@@ -1,7 +1,7 @@
 {
-  "name": "ai-career-agent-platform",
-  "version": "1.0.0",
-  "description": "AI Career Agent Coach - AI-Powered Career Advancement Platform",
+  "name": "agentic-ai-career-coach",
+  "version": "2.0.0",
+  "description": "Agentic AI Career Coach - Autonomous Career Advancement Platform",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -87,18 +87,18 @@
     "vite"
   ],
   "author": {
-    "name": "AI Career Agent Coach",
-    "email": "contact@aicareeragentcoach.com",
-    "url": "https://github.com/rajkumar20197/ai-career-agent-aws-bedrock"
+    "name": "Rajkumar Thota",
+    "email": "rajkumarthota979@gmail.com",
+    "url": "https://github.com/rajkumar20197/AWS_Cloud_Project_Career-Copilot"
   },
   "license": "MIT",
-  "copyright": "Copyright (c) 2025 AI Career Agent Coach. All rights reserved.",
+  "copyright": "Copyright (c) 2025 Agentic AI Career Coach | By Rajkumar Thota",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rajkumar20197/ai-career-agent-aws-bedrock.git"
+    "url": "https://github.com/rajkumar20197/AWS_Cloud_Project_Career-Copilot.git"
   },
   "bugs": {
-    "url": "https://github.com/rajkumar20197/ai-career-agent-aws-bedrock/issues"
+    "url": "https://github.com/rajkumar20197/AWS_Cloud_Project_Career-Copilot/issues"
   },
-  "homepage": "https://github.com/rajkumar20197/ai-career-agent-aws-bedrock#readme"
+  "homepage": "https://github.com/rajkumar20197/AWS_Cloud_Project_Career-Copilot#readme"
 }
