@@ -1,3 +1,14 @@
+/**
+ * Agentic AI Career Coach
+ * Copyright (c) 2025 Agentic AI Career Coach | By Rajkumar Thota
+ *
+ * This file is part of the Agentic AI Career Coach project.
+ * Licensed under the MIT License - see LICENSE file for details.
+ *
+ * @author Rajkumar Thota <rajkumarthota20197@gmail.com>
+ * @created January 11, 2026
+ */
+
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';

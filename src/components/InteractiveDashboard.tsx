@@ -1,8 +1,12 @@
 /**
- * Agentic AI Career Coach - Interactive Dashboard Component (Refactored)
+ * Agentic AI Career Coach
  * Copyright (c) 2025 Agentic AI Career Coach | By Rajkumar Thota
- * 
- * Refactored for better maintainability with extracted widgets
+ *
+ * This file is part of the Agentic AI Career Coach project.
+ * Licensed under the MIT License - see LICENSE file for details.
+ *
+ * @author Rajkumar Thota <rajkumarthota20197@gmail.com>
+ * @created January 11, 2026
  */
 
 import { motion } from 'motion/react';

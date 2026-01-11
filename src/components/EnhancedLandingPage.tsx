@@ -1,11 +1,12 @@
 /**
- * Agentic AI Career Coach - Enhanced Landing Page Component (Refactored)
+ * Agentic AI Career Coach
  * Copyright (c) 2025 Agentic AI Career Coach | By Rajkumar Thota
- * 
- * Refactored for better performance with lazy loading and code splitting
- * 
- * @author AI Career Agent Coach
- * @created 2025
+ *
+ * This file is part of the Agentic AI Career Coach project.
+ * Licensed under the MIT License - see LICENSE file for details.
+ *
+ * @author Rajkumar Thota <rajkumarthota20197@gmail.com>
+ * @created January 11, 2026
  */
 
 import { useState, lazy, Suspense } from 'react';
